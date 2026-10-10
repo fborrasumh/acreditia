@@ -405,6 +405,7 @@ td input[type=text],td select{width:100%;min-width:70px;padding:6px 8px;border:1
 .fa-ul ul{margin:4px 0 4px 18px}.fa-est{white-space:nowrap}.table-wrap table{min-width:640px}#planAcc table{min-width:1100px}
 #indTabla td:first-child input{min-width:230px}#indTabla select{min-width:92px}#indTabla td input[data-c],#indTabla td input[data-f=objetivo],#indTabla td input[data-f=unidad]{min-width:64px}
 .fa-drop{border:2px dashed var(--linea);border-radius:14px;padding:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.fa-drop.on{border-color:var(--brasa);background:var(--brasa-suave)}#carpetaRev{margin-top:12px}#carpetaRev td:nth-child(2){word-break:break-all;min-width:220px}
+#perfilRev{margin-top:16px}#perfilRev td input[data-f=n]{min-width:230px}#perfilRev td textarea{min-width:280px}#perfilRev td input[data-f=dim]{min-width:150px}
 </style></head>
 <body>
 <svg style="display:none" aria-hidden="true">
@@ -511,6 +512,11 @@ td input[type=text],td select{width:100%;min-width:70px;padding:6px 8px;border:1
   <div class="card"><div class="field"><label for="selMarco" data-i18n="Marco de evaluación">Marco de evaluación</label><select id="selMarco"></select></div><p class="help" id="marcoNota"></p>
     <div class="field" id="fMarcoTxt" style="display:none"><label for="marcoTxt" data-i18n="Tus criterios (uno por línea)">Tus criterios (uno por línea)</label><textarea id="marcoTxt" rows="7" placeholder="Dimensión | Criterio"></textarea></div>
     <details><summary data-i18n="Ver los criterios del marco">Ver los criterios del marco</summary><ul id="marcoLista" class="fa-ul"></ul></details></div>
+  <div class="card" id="perfilCard"><h3 data-i18n="Cargar los criterios de tu agencia">Cargar los criterios de tu agencia</h3><p class="help" data-i18n="s.perfil.ayuda">Sube la guía de tu agencia (Word, PDF o texto) o pega el capítulo de criterios: AcreditIA detecta las dimensiones y los criterios por su estructura («Criterio 1. …», «Standard 1.1 …»). Después puedes completarlos con IA —cada criterio debe traer una cita literal que el código comprueba—, corregirlos a mano, guardarlos como marco y exportarlos para compartirlos con otras universidades.</p>
+    <div class="actions" style="margin-top:0"><label class="btn btn-ghost btn-sm"><input type="file" id="fGuia" accept=".docx,.pdf,.pptx,.txt,.md" hidden><span data-i18n="Subir la guía (Word, PDF o texto)">Subir la guía (Word, PDF o texto)</span></label><label class="btn btn-ghost btn-sm"><input type="file" id="fPerfil" accept=".json" hidden><span data-i18n="Importar un perfil (JSON)">Importar un perfil (JSON)</span></label></div>
+    <div class="field"><label for="guiaTxt" data-i18n="…o pega el texto de los criterios">…o pega el texto de los criterios</label><textarea id="guiaTxt" rows="4"></textarea></div>
+    <div class="actions"><button class="btn btn-primary btn-sm" id="btnDetecta" type="button" data-i18n="Detectar criterios">Detectar criterios</button><button class="btn btn-ghost btn-sm" id="btnDetectaIA" type="button" data-i18n="Completar con IA">Completar con IA</button></div>
+    <div id="perfilRev"></div><div id="perfilesGuardados"></div></div>
   <div class="card"><div class="field"><label for="tNombres" data-i18n="Nombres de personas a enmascarar (separados por comas)">Nombres de personas a enmascarar (separados por comas)</label><textarea id="tNombres" rows="2" placeholder="Ana Pérez, Luis Gómez"></textarea></div><p class="help" data-i18n="s.nombres.ayuda">Antes de enviar texto a un proveedor en la nube se sustituyen por [PERSONA], además de correos, DNI/NIE, teléfonos y tratamientos como «Dr. …». Con IA local no se enmascara nada porque no sale del equipo.</p></div>
 </section>
 
@@ -1455,6 +1461,42 @@ const I18N = {
   "Importados {0} documentos.": "{0} documents imported.",
   "No se pudo leer el ZIP.": "The ZIP could not be read.",
   "No se pudo leer la carpeta.": "The folder could not be read.",
+  "Cargar los criterios de tu agencia": "Load your agency's criteria",
+  "s.perfil.ayuda": "Upload your agency's guide (Word, PDF or text) or paste the criteria chapter: AcreditIA detects the dimensions and criteria from their structure (“Criterion 1. …”, “Standard 1.1 …”). You can then complete them with AI —each criterion must come with a literal quote that the code checks—, correct them by hand, save them as a framework and export them to share with other universities.",
+  "Subir la guía (Word, PDF o texto)": "Upload the guide (Word, PDF or text)",
+  "Importar un perfil (JSON)": "Import a profile (JSON)",
+  "…o pega el texto de los criterios": "…or paste the text of the criteria",
+  "Detectar criterios": "Detect criteria",
+  "Completar con IA": "Complete with AI",
+  "Sube la guía o pega el texto de los criterios.": "Upload the guide or paste the text of the criteria.",
+  "Criterios detectados": "Detected criteria",
+  "Nombre del marco": "Framework name",
+  "Dimensión": "Dimension",
+  "Descripción": "Description",
+  "Origen": "Source",
+  "estructura del documento": "document structure",
+  "IA con cita verificada": "AI with verified quote",
+  "IA sin cita verificada": "AI without verified quote",
+  "manual": "manual",
+  "Añadir una fila": "Add a row",
+  "Guardar y usar como marco": "Save and use as framework",
+  "Exportar el perfil (JSON)": "Export the profile (JSON)",
+  "Marcos guardados": "Saved frameworks",
+  "Usar": "Use",
+  "Eliminar": "Delete",
+  "{0} criterios": "{0} criteria",
+  "Se han detectado {0} criterios en {1} dimensiones. Revísalos y corrige lo que haga falta.": "{0} criteria detected in {1} dimensions. Review them and correct what is needed.",
+  "No se han detectado criterios por la estructura. Prueba «Completar con IA» o pega solo el capítulo de criterios.": "No criteria detected from the structure. Try “Complete with AI” or paste only the criteria chapter.",
+  "No disponible en el ejemplo: carga primero tus propios datos.": "Not available in the example: load your own data first.",
+  "La IA ha añadido {0} criterios.": "The AI added {0} criteria.",
+  "La IA no encontró criterios nuevos.": "The AI found no new criteria.",
+  "Escribe un nombre para el marco.": "Enter a name for the framework.",
+  "Añade al menos un criterio.": "Add at least one criterion.",
+  "Marco «{0}» guardado y seleccionado.": "Framework “{0}” saved and selected.",
+  "El marco «{0}» se ha eliminado.": "Framework “{0}” has been deleted.",
+  "Perfil importado: «{0}».": "Profile imported: “{0}”.",
+  "El fichero no es un perfil de AcreditIA.": "The file is not an AcreditIA profile.",
+  "Sube la guía de tu agencia (Word, PDF o texto) y AcreditIA detecta por la estructura sus dimensiones y criterios. Después puedes completarlos con IA (cada criterio debe traer una cita literal que el código comprueba), corregirlos a mano, guardarlos como marco y exportarlos para compartirlos con otras personas o universidades.": "Upload your agency's guide (Word, PDF or text) and AcreditIA detects its dimensions and criteria from the structure. You can then complete them with AI (each criterion must come with a literal quote that the code checks), correct them by hand, save them as a framework and export them to share with other people or universities.",
   "title": "AcreditIA · Self-evaluation report and improvement plan for a degree, with verified evidence",
   "hero.eyebrow": "Degree self-evaluation with AI agents · Miguel Hernández University of Elche",
   "hero.h1": "Your degree's self-evaluation report, <em>with every claim tied to its evidence</em>",
@@ -1846,6 +1888,42 @@ const I18N = {
   "Importados {0} documentos.": "{0} documentos importados.",
   "No se pudo leer el ZIP.": "Não foi possível ler o ZIP.",
   "No se pudo leer la carpeta.": "Não foi possível ler a pasta.",
+  "Cargar los criterios de tu agencia": "Carregar os critérios da sua agência",
+  "s.perfil.ayuda": "Carregue o guia da sua agência (Word, PDF ou texto) ou cole o capítulo de critérios: a AcreditIA deteta as dimensões e os critérios pela sua estrutura («Critério 1. …», «Standard 1.1 …»). Depois pode completá-los com IA —cada critério deve vir com uma citação literal que o código verifica—, corrigi-los à mão, guardá-los como referencial e exportá-los para os partilhar com outras universidades.",
+  "Subir la guía (Word, PDF o texto)": "Carregar o guia (Word, PDF ou texto)",
+  "Importar un perfil (JSON)": "Importar um perfil (JSON)",
+  "…o pega el texto de los criterios": "…ou cole o texto dos critérios",
+  "Detectar criterios": "Detetar critérios",
+  "Completar con IA": "Completar com IA",
+  "Sube la guía o pega el texto de los criterios.": "Carregue o guia ou cole o texto dos critérios.",
+  "Criterios detectados": "Critérios detetados",
+  "Nombre del marco": "Nome do referencial",
+  "Dimensión": "Dimensão",
+  "Descripción": "Descrição",
+  "Origen": "Origem",
+  "estructura del documento": "estrutura do documento",
+  "IA con cita verificada": "IA com citação verificada",
+  "IA sin cita verificada": "IA sem citação verificada",
+  "manual": "manual",
+  "Añadir una fila": "Adicionar uma linha",
+  "Guardar y usar como marco": "Guardar e usar como referencial",
+  "Exportar el perfil (JSON)": "Exportar o perfil (JSON)",
+  "Marcos guardados": "Referenciais guardados",
+  "Usar": "Usar",
+  "Eliminar": "Eliminar",
+  "{0} criterios": "{0} critérios",
+  "Se han detectado {0} criterios en {1} dimensiones. Revísalos y corrige lo que haga falta.": "Foram detetados {0} critérios em {1} dimensões. Reveja-os e corrija o que for necessário.",
+  "No se han detectado criterios por la estructura. Prueba «Completar con IA» o pega solo el capítulo de criterios.": "Não foram detetados critérios pela estrutura. Experimente «Completar com IA» ou cole apenas o capítulo de critérios.",
+  "No disponible en el ejemplo: carga primero tus propios datos.": "Não disponível no exemplo: carregue primeiro os seus próprios dados.",
+  "La IA ha añadido {0} criterios.": "A IA acrescentou {0} critérios.",
+  "La IA no encontró criterios nuevos.": "A IA não encontrou critérios novos.",
+  "Escribe un nombre para el marco.": "Escreva um nome para o referencial.",
+  "Añade al menos un criterio.": "Adicione pelo menos um critério.",
+  "Marco «{0}» guardado y seleccionado.": "Referencial «{0}» guardado e selecionado.",
+  "El marco «{0}» se ha eliminado.": "O referencial «{0}» foi eliminado.",
+  "Perfil importado: «{0}».": "Perfil importado: «{0}».",
+  "El fichero no es un perfil de AcreditIA.": "O ficheiro não é um perfil da AcreditIA.",
+  "Sube la guía de tu agencia (Word, PDF o texto) y AcreditIA detecta por la estructura sus dimensiones y criterios. Después puedes completarlos con IA (cada criterio debe traer una cita literal que el código comprueba), corregirlos a mano, guardarlos como marco y exportarlos para compartirlos con otras personas o universidades.": "Carregue o guia da sua agência (Word, PDF ou texto) e a AcreditIA deteta pela estrutura as suas dimensões e critérios. Depois pode completá-los com IA (cada critério deve vir com uma citação literal que o código verifica), corrigi-los à mão, guardá-los como referencial e exportá-los para os partilhar com outras pessoas ou universidades.",
   "title": "AcreditIA · Relatório de autoavaliação e plano de melhoria de um curso, com evidências verificadas",
   "hero.eyebrow": "Autoavaliação de cursos de licenciatura com agentes de IA · Universidade Miguel Hernández de Elche",
   "hero.h1": "O relatório de autoavaliação do seu curso, <em>com cada afirmação ligada à sua evidência</em>",
@@ -2278,6 +2356,42 @@ const I18N = {
   "Importados {0} documentos.": "{0} documents importats.",
   "No se pudo leer el ZIP.": "No s'ha pogut llegir el ZIP.",
   "No se pudo leer la carpeta.": "No s'ha pogut llegir la carpeta.",
+  "Cargar los criterios de tu agencia": "Carrega els criteris de la teua agència",
+  "s.perfil.ayuda": "Puja la guia de la teua agència (Word, PDF o text) o apega el capítol de criteris: AcreditIA detecta les dimensions i els criteris per la seua estructura («Criteri 1. …», «Standard 1.1 …»). Després pots completar-los amb IA —cada criteri ha de portar una cita literal que el codi comprova—, corregir-los a mà, guardar-los com a marc i exportar-los per a compartir-los amb altres universitats.",
+  "Subir la guía (Word, PDF o texto)": "Puja la guia (Word, PDF o text)",
+  "Importar un perfil (JSON)": "Importa un perfil (JSON)",
+  "…o pega el texto de los criterios": "…o apega el text dels criteris",
+  "Detectar criterios": "Detecta criteris",
+  "Completar con IA": "Completa amb IA",
+  "Sube la guía o pega el texto de los criterios.": "Puja la guia o apega el text dels criteris.",
+  "Criterios detectados": "Criteris detectats",
+  "Nombre del marco": "Nom del marc",
+  "Dimensión": "Dimensió",
+  "Descripción": "Descripció",
+  "Origen": "Origen",
+  "estructura del documento": "estructura del document",
+  "IA con cita verificada": "IA amb cita verificada",
+  "IA sin cita verificada": "IA sense cita verificada",
+  "manual": "manual",
+  "Añadir una fila": "Afig una fila",
+  "Guardar y usar como marco": "Guarda i usa com a marc",
+  "Exportar el perfil (JSON)": "Exporta el perfil (JSON)",
+  "Marcos guardados": "Marcs guardats",
+  "Usar": "Usa",
+  "Eliminar": "Elimina",
+  "{0} criterios": "{0} criteris",
+  "Se han detectado {0} criterios en {1} dimensiones. Revísalos y corrige lo que haga falta.": "S'han detectat {0} criteris en {1} dimensions. Revisa'ls i corregix el que calga.",
+  "No se han detectado criterios por la estructura. Prueba «Completar con IA» o pega solo el capítulo de criterios.": "No s'han detectat criteris per l'estructura. Prova «Completa amb IA» o apega només el capítol de criteris.",
+  "No disponible en el ejemplo: carga primero tus propios datos.": "No disponible en l'exemple: carrega primer les teues pròpies dades.",
+  "La IA ha añadido {0} criterios.": "La IA ha afegit {0} criteris.",
+  "La IA no encontró criterios nuevos.": "La IA no ha trobat criteris nous.",
+  "Escribe un nombre para el marco.": "Escriu un nom per al marc.",
+  "Añade al menos un criterio.": "Afig almenys un criteri.",
+  "Marco «{0}» guardado y seleccionado.": "Marc «{0}» guardat i seleccionat.",
+  "El marco «{0}» se ha eliminado.": "El marc «{0}» s'ha eliminat.",
+  "Perfil importado: «{0}».": "Perfil importat: «{0}».",
+  "El fichero no es un perfil de AcreditIA.": "El fitxer no és un perfil d'AcreditIA.",
+  "Sube la guía de tu agencia (Word, PDF o texto) y AcreditIA detecta por la estructura sus dimensiones y criterios. Después puedes completarlos con IA (cada criterio debe traer una cita literal que el código comprueba), corregirlos a mano, guardarlos como marco y exportarlos para compartirlos con otras personas o universidades.": "Puja la guia de la teua agència (Word, PDF o text) i AcreditIA en detecta per l'estructura les dimensions i els criteris. Després pots completar-los amb IA (cada criteri ha de portar una cita literal que el codi comprova), corregir-los a mà, guardar-los com a marc i exportar-los per a compartir-los amb altres persones o universitats.",
   "title": "AcreditIA · Autoinforme i pla de millora d'un títol, amb evidències verificades",
   "hero.eyebrow": "Autoavaluació de títols de grau amb agents d'IA · Universitat Miguel Hernández d'Elx",
   "hero.h1": "L'autoinforme del teu títol, <em>amb cada afirmació lligada a la seua evidència</em>",
@@ -2710,6 +2824,42 @@ const I18N = {
   "Importados {0} documentos.": "{0} documentos importados.",
   "No se pudo leer el ZIP.": "Non se puido ler o ZIP.",
   "No se pudo leer la carpeta.": "Non se puido ler o cartafol.",
+  "Cargar los criterios de tu agencia": "Cargar os criterios da túa axencia",
+  "s.perfil.ayuda": "Sube a guía da túa axencia (Word, PDF ou texto) ou pega o capítulo de criterios: AcreditIA detecta as dimensións e os criterios pola súa estrutura («Criterio 1. …», «Standard 1.1 …»). Despois podes completalos con IA —cada criterio debe traer unha cita literal que o código comproba—, corrixilos a man, gardalos como marco e exportalos para compartilos con outras universidades.",
+  "Subir la guía (Word, PDF o texto)": "Subir a guía (Word, PDF ou texto)",
+  "Importar un perfil (JSON)": "Importar un perfil (JSON)",
+  "…o pega el texto de los criterios": "…ou pega o texto dos criterios",
+  "Detectar criterios": "Detectar criterios",
+  "Completar con IA": "Completar con IA",
+  "Sube la guía o pega el texto de los criterios.": "Sube a guía ou pega o texto dos criterios.",
+  "Criterios detectados": "Criterios detectados",
+  "Nombre del marco": "Nome do marco",
+  "Dimensión": "Dimensión",
+  "Descripción": "Descrición",
+  "Origen": "Orixe",
+  "estructura del documento": "estrutura do documento",
+  "IA con cita verificada": "IA con cita verificada",
+  "IA sin cita verificada": "IA sen cita verificada",
+  "manual": "manual",
+  "Añadir una fila": "Engadir unha fila",
+  "Guardar y usar como marco": "Gardar e usar como marco",
+  "Exportar el perfil (JSON)": "Exportar o perfil (JSON)",
+  "Marcos guardados": "Marcos gardados",
+  "Usar": "Usar",
+  "Eliminar": "Eliminar",
+  "{0} criterios": "{0} criterios",
+  "Se han detectado {0} criterios en {1} dimensiones. Revísalos y corrige lo que haga falta.": "Detectáronse {0} criterios en {1} dimensións. Revísaos e corrixe o que faga falta.",
+  "No se han detectado criterios por la estructura. Prueba «Completar con IA» o pega solo el capítulo de criterios.": "Non se detectaron criterios pola estrutura. Proba «Completar con IA» ou pega só o capítulo de criterios.",
+  "No disponible en el ejemplo: carga primero tus propios datos.": "Non dispoñible no exemplo: carga primeiro os teus propios datos.",
+  "La IA ha añadido {0} criterios.": "A IA engadiu {0} criterios.",
+  "La IA no encontró criterios nuevos.": "A IA non atopou criterios novos.",
+  "Escribe un nombre para el marco.": "Escribe un nome para o marco.",
+  "Añade al menos un criterio.": "Engade polo menos un criterio.",
+  "Marco «{0}» guardado y seleccionado.": "Marco «{0}» gardado e seleccionado.",
+  "El marco «{0}» se ha eliminado.": "O marco «{0}» eliminouse.",
+  "Perfil importado: «{0}».": "Perfil importado: «{0}».",
+  "El fichero no es un perfil de AcreditIA.": "O ficheiro non é un perfil de AcreditIA.",
+  "Sube la guía de tu agencia (Word, PDF o texto) y AcreditIA detecta por la estructura sus dimensiones y criterios. Después puedes completarlos con IA (cada criterio debe traer una cita literal que el código comprueba), corregirlos a mano, guardarlos como marco y exportarlos para compartirlos con otras personas o universidades.": "Sube a guía da túa axencia (Word, PDF ou texto) e AcreditIA detecta pola estrutura as súas dimensións e criterios. Despois podes completalos con IA (cada criterio debe traer unha cita literal que o código comproba), corrixilos a man, gardalos como marco e exportalos para compartilos con outras persoas ou universidades.",
   "title": "AcreditIA · Autoinforme e plan de mellora dun título, con evidencias verificadas",
   "hero.eyebrow": "Autoavaliación de títulos de grao con axentes de IA · Universidade Miguel Hernández de Elche",
   "hero.h1": "O autoinforme do teu título, <em>con cada afirmación atada á súa evidencia</em>",
@@ -3142,6 +3292,42 @@ const I18N = {
   "Importados {0} documentos.": "{0} dokumentu inportatu dira.",
   "No se pudo leer el ZIP.": "Ezin izan da ZIPa irakurri.",
   "No se pudo leer la carpeta.": "Ezin izan da karpeta irakurri.",
+  "Cargar los criterios de tu agencia": "Kargatu zure agentziaren irizpideak",
+  "s.perfil.ayuda": "Igo zure agentziaren gida (Word, PDF edo testua) edo itsatsi irizpideen kapitulua: AcreditIAk dimentsioak eta irizpideak detektatzen ditu haien egituratik («1. irizpidea. …», «Standard 1.1 …»). Gero IArekin osa ditzakezu —irizpide bakoitzak kodeak egiaztatzen duen hitzez hitzezko aipu bat eraman behar du—, eskuz zuzendu, esparru gisa gorde eta esportatu beste unibertsitateekin partekatzeko.",
+  "Subir la guía (Word, PDF o texto)": "Igo gida (Word, PDF edo testua)",
+  "Importar un perfil (JSON)": "Inportatu profil bat (JSON)",
+  "…o pega el texto de los criterios": "…edo itsatsi irizpideen testua",
+  "Detectar criterios": "Detektatu irizpideak",
+  "Completar con IA": "Osatu IArekin",
+  "Sube la guía o pega el texto de los criterios.": "Igo gida edo itsatsi irizpideen testua.",
+  "Criterios detectados": "Detektatutako irizpideak",
+  "Nombre del marco": "Esparruaren izena",
+  "Dimensión": "Dimentsioa",
+  "Descripción": "Deskribapena",
+  "Origen": "Jatorria",
+  "estructura del documento": "dokumentuaren egitura",
+  "IA con cita verificada": "IA aipu egiaztatuarekin",
+  "IA sin cita verificada": "IA aipu egiaztatu gabe",
+  "manual": "eskuzkoa",
+  "Añadir una fila": "Gehitu errenkada bat",
+  "Guardar y usar como marco": "Gorde eta erabili esparru gisa",
+  "Exportar el perfil (JSON)": "Esportatu profila (JSON)",
+  "Marcos guardados": "Gordetako esparruak",
+  "Usar": "Erabili",
+  "Eliminar": "Ezabatu",
+  "{0} criterios": "{0} irizpide",
+  "Se han detectado {0} criterios en {1} dimensiones. Revísalos y corrige lo que haga falta.": "{0} irizpide detektatu dira {1} dimentsiotan. Berrikusi eta zuzendu behar dena.",
+  "No se han detectado criterios por la estructura. Prueba «Completar con IA» o pega solo el capítulo de criterios.": "Ez da irizpiderik detektatu egituratik. Saiatu «Osatu IArekin» edo itsatsi irizpideen kapitulua soilik.",
+  "No disponible en el ejemplo: carga primero tus propios datos.": "Ez dago eskuragarri adibidean: kargatu lehenik zure datuak.",
+  "La IA ha añadido {0} criterios.": "IAk {0} irizpide gehitu ditu.",
+  "La IA no encontró criterios nuevos.": "IAk ez du irizpide berririk aurkitu.",
+  "Escribe un nombre para el marco.": "Idatzi izen bat esparruarentzat.",
+  "Añade al menos un criterio.": "Gehitu gutxienez irizpide bat.",
+  "Marco «{0}» guardado y seleccionado.": "«{0}» esparrua gorde eta hautatu da.",
+  "El marco «{0}» se ha eliminado.": "«{0}» esparrua ezabatu da.",
+  "Perfil importado: «{0}».": "Profila inportatu da: «{0}».",
+  "El fichero no es un perfil de AcreditIA.": "Fitxategia ez da AcreditIA profil bat.",
+  "Sube la guía de tu agencia (Word, PDF o texto) y AcreditIA detecta por la estructura sus dimensiones y criterios. Después puedes completarlos con IA (cada criterio debe traer una cita literal que el código comprueba), corregirlos a mano, guardarlos como marco y exportarlos para compartirlos con otras personas o universidades.": "Igo zure agentziaren gida (Word, PDF edo testua) eta AcreditIAk bere dimentsioak eta irizpideak detektatzen ditu egituratik. Gero IArekin osa ditzakezu (irizpide bakoitzak kodeak egiaztatzen duen hitzez hitzezko aipu bat eraman behar du), eskuz zuzendu, esparru gisa gorde eta esportatu beste pertsona edo unibertsitateekin partekatzeko.",
   "title": "AcreditIA · Titulu baten autotxostena eta hobekuntza-plana, ebidentzia egiaztatuekin",
   "hero.eyebrow": "Graduko tituluen autoebaluazioa IA agenteekin · Elxeko Miguel Hernández Unibertsitatea",
   "hero.h1": "Zure tituluaren autotxostena, <em>baieztapen bakoitza bere ebidentziarekin lotuta</em>",
@@ -3269,7 +3455,35 @@ const DATA_TR = {
   "Información pública y transparencia": "Informació pública i transparència",
   "Garantía interna de la calidad y mejora continua": "Garantia interna de la qualitat i millora contínua",
   "Recursos, servicios y apoyo al estudiante": "Recursos, serveis i suport a l'estudiant",
-  "Resultados e indicadores: progreso, satisfacción e inserción": "Resultats i indicadors: progrés, satisfacció i inserció"
+  "Resultados e indicadores: progreso, satisfacción e inserción": "Resultats i indicadors: progrés, satisfacció i inserció",
+  "ANECA · ACREDITA máster (España, renovación de la acreditación)": "ANECA · ACREDITA màster (Espanya, renovació de l'acreditació)",
+  "Mismo modelo de siete criterios que el grado, con descripciones adaptadas al máster por AcreditIA (no son texto oficial). Contrasta con la guía vigente de tu agencia.": "Mateix model de set criteris que el grau, amb descripcions adaptades al màster per AcreditIA (no són text oficial). Contrasta amb la guia vigent de la teua agència.",
+  "ANECA · ACREDITA doctorado (España, renovación de la acreditación)": "ANECA · ACREDITA doctorat (Espanya, renovació de l'acreditació)",
+  "Tres dimensiones y siete criterios según la guía ACREDITA DOCTORADO de ANECA (v3.0, 2024); las descripciones son un resumen de AcreditIA. Si tu agencia es autonómica, carga su guía con «Cargar los criterios de tu agencia».": "Tres dimensions i set criteris segons la guia ACREDITA DOCTORADO d'ANECA (v3.0, 2024); les descripcions són un resum d'AcreditIA. Si la teua agència és autonòmica, carrega la seua guia amb «Carrega els criteris de la teua agència».",
+  "EUR-ACE · ENAEE (programas de ingeniería)": "EUR-ACE · ENAEE (programes d'enginyeria)",
+  "Seis criterios a partir de la estructura de los EAFSG 2021 (carga de trabajo, resultados, objetivos y proceso de enseñanza y aprendizaje, estudiantes, profesorado e instalaciones). Resumen orientativo de AcreditIA: contrasta con el documento oficial y con la agencia autorizada que concede el sello.": "Sis criteris a partir de l'estructura dels EAFSG 2021 (càrrega de treball, resultats, objectius i procés d'ensenyament i aprenentatge, estudiants, professorat i instal·lacions). Resum orientatiu d'AcreditIA: contrasta amb el document oficial i amb l'agència autoritzada que concedix el segell.",
+  "ABET · criterios generales (programas de ingeniería)": "ABET · criteris generals (programes d'enginyeria)",
+  "Los ocho criterios generales de ABET para programas de ingeniería (ciclos 2019-2025). Resumen orientativo de AcreditIA: ABET revisa sus criterios cada ciclo; carga el documento vigente con «Cargar los criterios de tu agencia» si necesitas el texto exacto.": "Els huit criteris generals d'ABET per a programes d'enginyeria (cicles 2019-2025). Resum orientatiu d'AcreditIA: ABET revisa els seus criteris cada cicle; carrega el document vigent amb «Carrega els criteris de la teua agència» si necessites el text exacte.",
+  "Adecuación del desarrollo del programa": "Adequació del desenvolupament del programa",
+  "Desarrollo del programa de doctorado": "Desenvolupament del programa de doctorat",
+  "Adecuación de los recursos": "Adequació dels recursos",
+  "Personal investigador": "Personal investigador",
+  "Recursos materiales y servicios": "Recursos materials i serveis",
+  "Adecuación de los resultados de aprendizaje": "Adequació dels resultats d'aprenentatge",
+  "Resultados de aprendizaje (nivel 4 del MECES)": "Resultats d'aprenentatge (nivell 4 del MECES)",
+  "Resultados e indicadores del programa": "Resultats i indicadors del programa",
+  "EAFSG · Estándares del programa": "EAFSG · Estàndards del programa",
+  "Carga de trabajo del estudiante (ECTS)": "Càrrega de treball de l'estudiant (ECTS)",
+  "Resultados del programa (programme outcomes)": "Resultats del programa (programme outcomes)",
+  "Objetivos y proceso de enseñanza y aprendizaje": "Objectius i procés d'ensenyament i aprenentatge",
+  "Estudiantes (de la admisión a la titulación)": "Estudiants (de l'admissió a la titulació)",
+  "Instalaciones, recursos y personal de apoyo": "Instal·lacions, recursos i personal de suport",
+  "ABET · Criterios generales": "ABET · Criteris generals",
+  "Objetivos educativos del programa (PEO)": "Objectius educatius del programa (PEO)",
+  "Resultados del estudiante (student outcomes)": "Resultats de l'estudiant (student outcomes)",
+  "Mejora continua": "Millora contínua",
+  "Instalaciones": "Instal·lacions",
+  "Apoyo institucional": "Suport institucional"
  },
  "gl": {
   "Se supera excelentemente": "Supérase excelentemente",
@@ -3391,7 +3605,35 @@ const DATA_TR = {
   "Información pública y transparencia": "Información pública e transparencia",
   "Garantía interna de la calidad y mejora continua": "Garantía interna da calidade e mellora continua",
   "Recursos, servicios y apoyo al estudiante": "Recursos, servizos e apoio ao estudante",
-  "Resultados e indicadores: progreso, satisfacción e inserción": "Resultados e indicadores: progreso, satisfacción e inserción"
+  "Resultados e indicadores: progreso, satisfacción e inserción": "Resultados e indicadores: progreso, satisfacción e inserción",
+  "ANECA · ACREDITA máster (España, renovación de la acreditación)": "ANECA · ACREDITA máster (España, renovación da acreditación)",
+  "Mismo modelo de siete criterios que el grado, con descripciones adaptadas al máster por AcreditIA (no son texto oficial). Contrasta con la guía vigente de tu agencia.": "Mesmo modelo de sete criterios que o grao, con descricións adaptadas ao máster por AcreditIA (non son texto oficial). Contrasta coa guía vixente da túa axencia.",
+  "ANECA · ACREDITA doctorado (España, renovación de la acreditación)": "ANECA · ACREDITA doutoramento (España, renovación da acreditación)",
+  "Tres dimensiones y siete criterios según la guía ACREDITA DOCTORADO de ANECA (v3.0, 2024); las descripciones son un resumen de AcreditIA. Si tu agencia es autonómica, carga su guía con «Cargar los criterios de tu agencia».": "Tres dimensións e sete criterios segundo a guía ACREDITA DOCTORADO de ANECA (v3.0, 2024); as descricións son un resumo de AcreditIA. Se a túa axencia é autonómica, carga a súa guía con «Cargar os criterios da túa axencia».",
+  "EUR-ACE · ENAEE (programas de ingeniería)": "EUR-ACE · ENAEE (programas de enxeñaría)",
+  "Seis criterios a partir de la estructura de los EAFSG 2021 (carga de trabajo, resultados, objetivos y proceso de enseñanza y aprendizaje, estudiantes, profesorado e instalaciones). Resumen orientativo de AcreditIA: contrasta con el documento oficial y con la agencia autorizada que concede el sello.": "Seis criterios a partir da estrutura dos EAFSG 2021 (carga de traballo, resultados, obxectivos e proceso de ensino e aprendizaxe, estudantes, profesorado e instalacións). Resumo orientativo de AcreditIA: contrasta co documento oficial e coa axencia autorizada que concede o selo.",
+  "ABET · criterios generales (programas de ingeniería)": "ABET · criterios xerais (programas de enxeñaría)",
+  "Los ocho criterios generales de ABET para programas de ingeniería (ciclos 2019-2025). Resumen orientativo de AcreditIA: ABET revisa sus criterios cada ciclo; carga el documento vigente con «Cargar los criterios de tu agencia» si necesitas el texto exacto.": "Os oito criterios xerais de ABET para programas de enxeñaría (ciclos 2019-2025). Resumo orientativo de AcreditIA: ABET revisa os seus criterios cada ciclo; carga o documento vixente con «Cargar os criterios da túa axencia» se precisas o texto exacto.",
+  "Adecuación del desarrollo del programa": "Adecuación do desenvolvemento do programa",
+  "Desarrollo del programa de doctorado": "Desenvolvemento do programa de doutoramento",
+  "Adecuación de los recursos": "Adecuación dos recursos",
+  "Personal investigador": "Persoal investigador",
+  "Recursos materiales y servicios": "Recursos materiais e servizos",
+  "Adecuación de los resultados de aprendizaje": "Adecuación dos resultados de aprendizaxe",
+  "Resultados de aprendizaje (nivel 4 del MECES)": "Resultados de aprendizaxe (nivel 4 do MECES)",
+  "Resultados e indicadores del programa": "Resultados e indicadores do programa",
+  "EAFSG · Estándares del programa": "EAFSG · Estándares do programa",
+  "Carga de trabajo del estudiante (ECTS)": "Carga de traballo do estudante (ECTS)",
+  "Resultados del programa (programme outcomes)": "Resultados do programa (programme outcomes)",
+  "Objetivos y proceso de enseñanza y aprendizaje": "Obxectivos e proceso de ensino e aprendizaxe",
+  "Estudiantes (de la admisión a la titulación)": "Estudantes (da admisión á titulación)",
+  "Instalaciones, recursos y personal de apoyo": "Instalacións, recursos e persoal de apoio",
+  "ABET · Criterios generales": "ABET · Criterios xerais",
+  "Objetivos educativos del programa (PEO)": "Obxectivos educativos do programa (PEO)",
+  "Resultados del estudiante (student outcomes)": "Resultados do estudante (student outcomes)",
+  "Mejora continua": "Mellora continua",
+  "Instalaciones": "Instalacións",
+  "Apoyo institucional": "Apoio institucional"
  },
  "eu": {
   "Se supera excelentemente": "Bikain gainditzen da",
@@ -3513,7 +3755,35 @@ const DATA_TR = {
   "Información pública y transparencia": "Informazio publikoa eta gardentasuna",
   "Garantía interna de la calidad y mejora continua": "Barne-kalitate-bermea eta etengabeko hobekuntza",
   "Recursos, servicios y apoyo al estudiante": "Baliabideak, zerbitzuak eta ikasleentzako laguntza",
-  "Resultados e indicadores: progreso, satisfacción e inserción": "Emaitzak eta adierazleak: aurrerapena, gogobetetzea eta laneratzea"
+  "Resultados e indicadores: progreso, satisfacción e inserción": "Emaitzak eta adierazleak: aurrerapena, gogobetetzea eta laneratzea",
+  "ANECA · ACREDITA máster (España, renovación de la acreditación)": "ANECA · ACREDITA masterra (Espainia, akreditazioaren berritzea)",
+  "Mismo modelo de siete criterios que el grado, con descripciones adaptadas al máster por AcreditIA (no son texto oficial). Contrasta con la guía vigente de tu agencia.": "Graduaren zazpi irizpideko eredu bera, AcreditIAk masterrera egokitutako deskribapenekin (ez dira testu ofizialak). Egiaztatu zure agentziaren gida indardunarekin.",
+  "ANECA · ACREDITA doctorado (España, renovación de la acreditación)": "ANECA · ACREDITA doktoretza (Espainia, akreditazioaren berritzea)",
+  "Tres dimensiones y siete criterios según la guía ACREDITA DOCTORADO de ANECA (v3.0, 2024); las descripciones son un resumen de AcreditIA. Si tu agencia es autonómica, carga su guía con «Cargar los criterios de tu agencia».": "Hiru dimentsio eta zazpi irizpide ANECAren ACREDITA DOCTORADO gidaren arabera (v3.0, 2024); deskribapenak AcreditIAren laburpena dira. Zure agentzia autonomikoa bada, kargatu bere gida «Kargatu zure agentziaren irizpideak» aukerarekin.",
+  "EUR-ACE · ENAEE (programas de ingeniería)": "EUR-ACE · ENAEE (ingeniaritza-programak)",
+  "Seis criterios a partir de la estructura de los EAFSG 2021 (carga de trabajo, resultados, objetivos y proceso de enseñanza y aprendizaje, estudiantes, profesorado e instalaciones). Resumen orientativo de AcreditIA: contrasta con el documento oficial y con la agencia autorizada que concede el sello.": "Sei irizpide EAFSG 2021en egituratik abiatuta (lan-karga, emaitzak, helburuak eta irakaskuntza- eta ikaskuntza-prozesua, ikasleak, irakasleak eta instalazioak). AcreditIAren laburpen orientagarria: egiaztatu dokumentu ofizialarekin eta zigilua ematen duen agentzia baimenduarekin.",
+  "ABET · criterios generales (programas de ingeniería)": "ABET · irizpide orokorrak (ingeniaritza-programak)",
+  "Los ocho criterios generales de ABET para programas de ingeniería (ciclos 2019-2025). Resumen orientativo de AcreditIA: ABET revisa sus criterios cada ciclo; carga el documento vigente con «Cargar los criterios de tu agencia» si necesitas el texto exacto.": "ABETen zortzi irizpide orokorrak ingeniaritza-programetarako (2019-2025 zikloak). AcreditIAren laburpen orientagarria: ABETek zikloro berrikusten ditu bere irizpideak; kargatu dokumentu indardunak «Kargatu zure agentziaren irizpideak» aukerarekin testu zehatza behar baduzu.",
+  "Adecuación del desarrollo del programa": "Programaren garapenaren egokitasuna",
+  "Desarrollo del programa de doctorado": "Doktoretza-programaren garapena",
+  "Adecuación de los recursos": "Baliabideen egokitasuna",
+  "Personal investigador": "Ikertzaile-langileak",
+  "Recursos materiales y servicios": "Baliabide materialak eta zerbitzuak",
+  "Adecuación de los resultados de aprendizaje": "Ikaskuntza-emaitzen egokitasuna",
+  "Resultados de aprendizaje (nivel 4 del MECES)": "Ikaskuntza-emaitzak (MECESen 4. maila)",
+  "Resultados e indicadores del programa": "Programaren emaitzak eta adierazleak",
+  "EAFSG · Estándares del programa": "EAFSG · Programaren estandarrak",
+  "Carga de trabajo del estudiante (ECTS)": "Ikaslearen lan-karga (ECTS)",
+  "Resultados del programa (programme outcomes)": "Programaren emaitzak (programme outcomes)",
+  "Objetivos y proceso de enseñanza y aprendizaje": "Helburuak eta irakaskuntza- eta ikaskuntza-prozesua",
+  "Estudiantes (de la admisión a la titulación)": "Ikasleak (onarpenetik titulaziora)",
+  "Instalaciones, recursos y personal de apoyo": "Instalazioak, baliabideak eta laguntza-langileak",
+  "ABET · Criterios generales": "ABET · Irizpide orokorrak",
+  "Objetivos educativos del programa (PEO)": "Programaren helburu hezitzaileak (PEO)",
+  "Resultados del estudiante (student outcomes)": "Ikaslearen emaitzak (student outcomes)",
+  "Mejora continua": "Etengabeko hobekuntza",
+  "Instalaciones": "Instalazioak",
+  "Apoyo institucional": "Laguntza instituzionala"
  }
 };
 
@@ -3623,6 +3893,73 @@ const MARCOS = {
     ]}]
   }
 };
+/* ══ Marcos añadidos en la v1.1: máster, doctorado, EUR-ACE y ABET ══
+   Doctorado: estructura tomada de la Guía de Evaluación Externa ACREDITA DOCTORADO v3.0 (ANECA, febrero 2024; 3 dimensiones, 7 criterios).
+   Máster: ANECA aplica el mismo modelo de 7 criterios que al grado; las descripciones son adaptaciones de AcreditIA al máster.
+   EUR-ACE y ABET: resúmenes de AcreditIA a partir de los índices y presentaciones públicas de ENAEE y de los criterios generales de ABET: orientativos. */
+(() => {
+  const clon = o => JSON.parse(JSON.stringify(o));
+  const M = clon(MARCOS.acredita);
+  const Q = {C1: 'El desarrollo del programa formativo del máster es coherente con la memoria verificada: perfil de ingreso, requisitos de acceso y admisión (incluidos los complementos formativos), coordinación docente, prácticas externas, trabajo fin de máster (TFM) y cumplimiento de la memoria y de sus modificaciones.', C4: 'El personal académico es suficiente y adecuado para el nivel 3 del MECES del máster: cualificación (proporción de doctores), experiencia docente, investigadora y profesional, y dedicación.', C6: 'Las actividades formativas, las metodologías y los sistemas de evaluación permiten alcanzar los resultados de aprendizaje previstos y el nivel 3 del MECES; TFM y prácticas incluidos.', C7: 'La evolución de los indicadores académicos (graduación, abandono, eficiencia, rendimiento), de la demanda y ocupación de plazas, de la satisfacción de los grupos de interés y de la inserción laboral es coherente con la memoria y el contexto del máster.'};
+  M.dims.forEach(d => d.crits.forEach(c => { if (Q[c.id]) c.q = Q[c.id]; }));
+  M.n = {es: 'ANECA · ACREDITA máster (España, renovación de la acreditación)', en: 'ANECA · ACREDITA master\'s (Spain, accreditation renewal)', pt: 'ANECA · ACREDITA mestrado (Espanha, renovação da acreditação)'};
+  M.nota = {es: 'Mismo modelo de siete criterios que el grado, con descripciones adaptadas al máster por AcreditIA (no son texto oficial). Contrasta con la guía vigente de tu agencia.', en: 'Same seven-criteria model as for bachelor degrees, with descriptions adapted to master\'s programmes by AcreditIA (not official text). Check against your agency\'s current guide.', pt: 'Mesmo modelo de sete critérios que a licenciatura, com descrições adaptadas ao mestrado pela AcreditIA (não é texto oficial). Confirme com o guia em vigor da sua agência.'};
+  MARCOS.acredita_master = M;
+  MARCOS.acredita_doctorado = {
+    n: {es: 'ANECA · ACREDITA doctorado (España, renovación de la acreditación)', en: 'ANECA · ACREDITA doctorate (Spain, accreditation renewal)', pt: 'ANECA · ACREDITA doutoramento (Espanha, renovação da acreditação)'},
+    nota: {es: 'Tres dimensiones y siete criterios según la guía ACREDITA DOCTORADO de ANECA (v3.0, 2024); las descripciones son un resumen de AcreditIA. Si tu agencia es autonómica, carga su guía con «Cargar los criterios de tu agencia».', en: 'Three dimensions and seven criteria following ANECA\'s ACREDITA DOCTORADO guide (v3.0, 2024); the descriptions are AcreditIA\'s summary. If your agency is regional, load its guide with “Load your agency\'s criteria”.', pt: 'Três dimensões e sete critérios segundo o guia ACREDITA DOCTORADO da ANECA (v3.0, 2024); as descrições são um resumo da AcreditIA. Se a sua agência for regional, carregue o seu guia com «Carregar os critérios da sua agência».'},
+    temas: {progreso: 'C7', rendimiento: 'C6', demanda: 'C1', satisfaccion: 'C7', profesorado: 'C4', recursos: 'C5', insercion: 'C7', calidad: 'C3'},
+    dims: [
+      {id: 'D1', n: {es: 'Adecuación del desarrollo del programa', en: 'Suitability of the programme\'s development', pt: 'Adequação do desenvolvimento do programa'}, crits: [
+        {id: 'C1', n: {es: 'Desarrollo del programa de doctorado', en: 'Development of the doctoral programme', pt: 'Desenvolvimento do programa de doutoramento'}, q: 'La institución asegura que el programa se desarrolla para cumplir sus objetivos y satisfacer las necesidades de formación de los doctorandos: criterios de admisión y perfil de ingreso, actividades formativas, procedimientos de seguimiento y supervisión (tutor, director, plan de investigación, documento de actividades) y colaboraciones nacionales e internacionales.', kw: ['admisión', 'perfil de ingreso', 'actividades formativas', 'doctorandos', 'tutor', 'director', 'plan de investigación', 'documento de actividades', 'colaboraciones', 'cotutela', 'movilidad', 'comisión académica', 'plazas'], cats: ['seg', 'act', 'enc', 'pm']},
+        {id: 'C2', n: {es: 'Información y transparencia', en: 'Information and transparency', pt: 'Informação e transparência'}, q: 'El programa publica en su web información completa y actualizada sobre su desarrollo y resultados, accesible a todos los grupos de interés y coherente con la memoria verificada (perfil de ingreso, admisión, competencias, normativa, comisión académica, actividades formativas, tesis leídas y contribuciones).', kw: ['web', 'información pública', 'transparencia', 'publicar', 'normativa', 'tesis leídas', 'contribuciones científicas', 'comisión académica'], cats: ['seg', 'aud', 'pm', 'qrf']},
+        {id: 'C3', n: {es: 'Sistema de garantía interna de la calidad (SGIC)', en: 'Internal quality assurance system', pt: 'Sistema interno de garantia da qualidade'}, q: 'El programa dispone de un SGIC formalmente establecido e implementado que asegura la revisión y mejora continua: recogida y análisis de información, atención a sugerencias y reclamaciones, cumplimiento de recomendaciones previas y plan de mejoras.', kw: ['sgic', 'garantía de calidad', 'quejas', 'sugerencias', 'plan de mejora', 'auditoría', 'recomendación', 'comisión', 'acuerdo', 'no conformidad'], cats: ['aud', 'act', 'qrf', 'pm', 'seg']}
+      ]},
+      {id: 'D2', n: {es: 'Adecuación de los recursos', en: 'Suitability of resources', pt: 'Adequação dos recursos'}, crits: [
+        {id: 'C4', n: {es: 'Personal investigador', en: 'Research staff', pt: 'Pessoal investigador'}, q: 'El personal investigador es suficiente, tiene dedicación adecuada y reúne los requisitos para participar: méritos de investigación vigentes (sexenios o equivalente), proyectos competitivos, calidad de las contribuciones de las tesis dirigidas y reconocimiento de la tutorización y dirección.', kw: ['personal investigador', 'sexenio', 'proyectos competitivos', 'tesis dirigidas', 'dirección de tesis', 'tutorización', 'dedicación', 'líneas de investigación', 'investigadores'], cats: ['seg', 'enc', 'ind']},
+        {id: 'C5', n: {es: 'Recursos materiales y servicios', en: 'Material resources and services', pt: 'Recursos materiais e serviços'}, q: 'Los recursos materiales y servicios (laboratorios, biblioteca, bases de datos, conectividad, financiación para congresos y estancias, orientación académica) se corresponden con la memoria verificada y son adecuados al ámbito científico y al número de doctorandos.', kw: ['laboratorio', 'biblioteca', 'bases de datos', 'conectividad', 'financiación', 'ayudas', 'congresos', 'estancias', 'orientación', 'recursos'], cats: ['qrf', 'pm', 'enc', 'act']}
+      ]},
+      {id: 'D3', n: {es: 'Adecuación de los resultados de aprendizaje', en: 'Suitability of learning outcomes', pt: 'Adequação dos resultados de aprendizagem'}, crits: [
+        {id: 'C6', n: {es: 'Resultados de aprendizaje (nivel 4 del MECES)', en: 'Learning outcomes (MECES level 4)', pt: 'Resultados de aprendizagem (nível 4 do MECES)'}, q: 'Los resultados de aprendizaje alcanzados, medidos en las aportaciones científicas de los doctorandos y en las tesis, satisfacen los objetivos del programa y se adecuan al nivel 4 del MECES.', kw: ['resultados de aprendizaje', 'tesis doctorales', 'contribuciones científicas', 'publicaciones', 'doctorandos', 'meces', 'plagio'], cats: ['ind', 'enc', 'seg']},
+        {id: 'C7', n: {es: 'Resultados e indicadores del programa', en: 'Programme results and indicators', pt: 'Resultados e indicadores do programa'}, q: 'Los resultados (abandono, tasa de éxito, duración media, tesis leídas, impacto de las contribuciones, empleabilidad y contratos postdoctorales) son coherentes con la memoria verificada y adecuados al ámbito científico del programa.', kw: ['abandono', 'tasa de éxito', 'duración media', 'tesis leídas', 'impacto', 'empleabilidad', 'contratos postdoctorales', 'inserción', 'doctores egresados'], cats: ['ind', 'enc', 'seg', 'act']}
+      ]}
+    ]
+  };
+  MARCOS.eurace = {
+    n: {es: 'EUR-ACE · ENAEE (programas de ingeniería)', en: 'EUR-ACE · ENAEE (engineering programmes)', pt: 'EUR-ACE · ENAEE (programas de engenharia)'},
+    nota: {es: 'Seis criterios a partir de la estructura de los EAFSG 2021 (carga de trabajo, resultados, objetivos y proceso de enseñanza y aprendizaje, estudiantes, profesorado e instalaciones). Resumen orientativo de AcreditIA: contrasta con el documento oficial y con la agencia autorizada que concede el sello.', en: 'Six criteria based on the structure of the 2021 EAFSG (workload, outcomes, aims and teaching and learning process, students, teaching staff and facilities). Indicative AcreditIA summary: check against the official document and the authorised agency awarding the label.', pt: 'Seis critérios a partir da estrutura dos EAFSG 2021 (carga de trabalho, resultados, objetivos e processo de ensino e aprendizagem, estudantes, docentes e instalações). Resumo indicativo da AcreditIA: confirme com o documento oficial e com a agência autorizada que atribui o selo.'},
+    temas: {progreso: 'E4', rendimiento: 'E2', demanda: 'E4', satisfaccion: 'E4', profesorado: 'E5', recursos: 'E6', insercion: 'E2', calidad: 'E3'},
+    dims: [{id: 'EA', n: {es: 'EAFSG · Estándares del programa', en: 'EAFSG · Programme standards', pt: 'EAFSG · Normas do programa'}, crits: [
+      {id: 'E1', n: {es: 'Carga de trabajo del estudiante (ECTS)', en: 'Student workload (ECTS)', pt: 'Carga de trabalho do estudante (ECTS)'}, q: 'La carga de trabajo del estudiante, expresada en créditos ECTS, cumple los mínimos del ciclo (grado o máster) y es coherente con la duración del programa.', kw: ['ects', 'créditos', 'carga de trabajo', 'duración', 'dedicación del estudiante'], cats: ['seg', 'act']},
+      {id: 'E2', n: {es: 'Resultados del programa (programme outcomes)', en: 'Programme outcomes', pt: 'Resultados do programa (programme outcomes)'}, q: 'Los resultados del programa describen conocimientos, comprensión y capacidades que el egresado en ingeniería debe demostrar (análisis, diseño, investigación, práctica de la ingeniería, juicio, comunicación y trabajo en equipo, aprendizaje a lo largo de la vida), en coherencia con el marco de cualificaciones.', kw: ['resultados de aprendizaje', 'competencias', 'análisis', 'diseño', 'práctica de la ingeniería', 'comunicación', 'trabajo en equipo', 'aprendizaje a lo largo de la vida', 'egresados', 'perfil de egreso'], cats: ['ind', 'enc', 'seg']},
+      {id: 'E3', n: {es: 'Objetivos y proceso de enseñanza y aprendizaje', en: 'Aims and teaching and learning process', pt: 'Objetivos e processo de ensino e aprendizagem'}, q: 'Los objetivos del programa responden a las necesidades de la sociedad y de los grupos de interés; el plan de estudios, las metodologías y la evaluación permiten alcanzar los resultados y se revisan de forma continua.', kw: ['objetivos', 'necesidades', 'grupos de interés', 'plan de estudios', 'metodologías', 'evaluación', 'revisión', 'mejora continua', 'plan de mejora'], cats: ['pm', 'act', 'aud', 'seg']},
+      {id: 'E4', n: {es: 'Estudiantes (de la admisión a la titulación)', en: 'Students (from admission to graduation)', pt: 'Estudantes (da admissão à titulação)'}, q: 'Hay criterios de admisión, seguimiento del progreso, reconocimiento y titulación coherentes y públicos; el progreso y los resultados de los estudiantes son adecuados.', kw: ['admisión', 'matrícula', 'abandono', 'graduación', 'progreso', 'reconocimiento', 'orientación', 'satisfacción'], cats: ['ind', 'enc']},
+      {id: 'E5', n: {es: 'Profesorado', en: 'Teaching staff', pt: 'Corpo docente'}, q: 'El profesorado es suficiente y competente (académica, profesional y pedagógicamente) para impartir el programa y se mantiene actualizado.', kw: ['profesorado', 'pdi', 'doctor', 'experiencia profesional', 'formación docente', 'ratio', 'actualización'], cats: ['seg', 'enc', 'ind']},
+      {id: 'E6', n: {es: 'Instalaciones, recursos y personal de apoyo', en: 'Facilities, resources and support staff', pt: 'Instalações, recursos e pessoal de apoio'}, q: 'Las instalaciones, los laboratorios, los recursos financieros y el personal de apoyo son adecuados para alcanzar los resultados del programa.', kw: ['laboratorio', 'aulas', 'equipamiento', 'biblioteca', 'financiación', 'personal de apoyo', 'recursos'], cats: ['qrf', 'pm', 'enc', 'act']}
+    ]}]
+  };
+  MARCOS.abet = {
+    n: {es: 'ABET · criterios generales (programas de ingeniería)', en: 'ABET · general criteria (engineering programmes)', pt: 'ABET · critérios gerais (programas de engenharia)'},
+    nota: {es: 'Los ocho criterios generales de ABET para programas de ingeniería (ciclos 2019-2025). Resumen orientativo de AcreditIA: ABET revisa sus criterios cada ciclo; carga el documento vigente con «Cargar los criterios de tu agencia» si necesitas el texto exacto.', en: 'ABET\'s eight general criteria for engineering programmes (2019-2025 cycles). Indicative AcreditIA summary: ABET revises its criteria every cycle; load the current document with “Load your agency\'s criteria” if you need the exact text.', pt: 'Os oito critérios gerais da ABET para programas de engenharia (ciclos 2019-2025). Resumo indicativo da AcreditIA: a ABET revê os seus critérios a cada ciclo; carregue o documento em vigor com «Carregar os critérios da sua agência» se precisar do texto exato.'},
+    temas: {progreso: 'A1', rendimiento: 'A3', demanda: 'A1', satisfaccion: 'A4', profesorado: 'A6', recursos: 'A7', insercion: 'A2', calidad: 'A4'},
+    dims: [{id: 'AB', n: {es: 'ABET · Criterios generales', en: 'ABET · General criteria', pt: 'ABET · Critérios gerais'}, crits: [
+      {id: 'A1', n: {es: 'Estudiantes', en: 'Students', pt: 'Estudantes'}, q: 'Evaluación, seguimiento y asesoramiento de los estudiantes; admisión; reconocimiento de créditos y de asignaturas; requisitos para titularse.', kw: ['estudiantes', 'admisión', 'asesoramiento', 'tutoría', 'reconocimiento', 'titulación', 'abandono', 'graduación'], cats: ['ind', 'enc']},
+      {id: 'A2', n: {es: 'Objetivos educativos del programa (PEO)', en: 'Programme educational objectives (PEO)', pt: 'Objetivos educacionais do programa (PEO)'}, q: 'Objetivos educativos del programa publicados, coherentes con la misión y con las necesidades de los grupos de interés, y revisados periódicamente.', kw: ['objetivos educativos', 'peo', 'misión', 'grupos de interés', 'egresados', 'empleadores', 'inserción'], cats: ['enc', 'act', 'seg']},
+      {id: 'A3', n: {es: 'Resultados del estudiante (student outcomes)', en: 'Student outcomes', pt: 'Resultados do estudante (student outcomes)'}, q: 'Resultados del estudiante (capacidades al graduarse) que apoyan los objetivos del programa, con evidencia de su logro.', kw: ['resultados del estudiante', 'student outcomes', 'competencias', 'resultados de aprendizaje', 'evaluación', 'rúbricas', 'logro'], cats: ['ind', 'enc', 'seg']},
+      {id: 'A4', n: {es: 'Mejora continua', en: 'Continuous improvement', pt: 'Melhoria contínua'}, q: 'Proceso sistemático de evaluación del logro de los resultados y uso de sus resultados para la mejora continua del programa.', kw: ['mejora continua', 'evaluación', 'plan de mejora', 'acciones', 'seguimiento', 'revisión', 'auditoría', 'acta'], cats: ['pm', 'act', 'aud', 'seg']},
+      {id: 'A5', n: {es: 'Plan de estudios', en: 'Curriculum', pt: 'Plano de estudos'}, q: 'Plan de estudios con matemáticas y ciencias básicas, ciencias de la ingeniería y diseño, y experiencia integradora o proyecto final, que permite alcanzar los resultados del estudiante.', kw: ['plan de estudios', 'matemáticas', 'ciencias básicas', 'diseño', 'proyecto final', 'tfg', 'prácticas', 'guías docentes'], cats: ['seg', 'pm', 'enc', 'aud']},
+      {id: 'A6', n: {es: 'Profesorado', en: 'Faculty', pt: 'Corpo docente'}, q: 'Profesorado suficiente en número y competencia para cubrir el plan de estudios, con orientación a estudiantes, desarrollo profesional y autoridad para mejorar el programa.', kw: ['profesorado', 'pdi', 'doctor', 'experiencia profesional', 'formación', 'dedicación', 'ratio'], cats: ['seg', 'enc', 'ind']},
+      {id: 'A7', n: {es: 'Instalaciones', en: 'Facilities', pt: 'Instalações'}, q: 'Aulas, laboratorios, equipos y recursos adecuados para el logro de los resultados y un entorno de aprendizaje seguro y propicio.', kw: ['aulas', 'laboratorios', 'equipamiento', 'recursos', 'seguridad', 'biblioteca', 'infraestructuras'], cats: ['qrf', 'pm', 'enc', 'act']},
+      {id: 'A8', n: {es: 'Apoyo institucional', en: 'Institutional support', pt: 'Apoio institucional'}, q: 'Liderazgo, apoyo institucional y recursos financieros suficientes para dar calidad y continuidad al programa.', kw: ['apoyo institucional', 'liderazgo', 'financiación', 'presupuesto', 'personal de apoyo', 'sostenibilidad'], cats: ['act', 'seg', 'aud']}
+    ]}]
+  };
+})();
+/* perfiles cargados por la persona (guía de su agencia) y marco personalizado de texto */
+function marcoActual() {
+  if (S.marco === 'custom') return marcoCustom(S.marcoTxt);
+  if (String(S.marco).startsWith('perfil:')) { const p = (S.perfiles || []).find(x => 'perfil:' + x.id === S.marco); if (p) return {n: p.nombre, nota: p.fuente ? '' + p.fuente : '', temas: p.temas || {}, dims: p.dims}; }
+  return MARCOS[S.marco] || MARCOS.acredita;
+}
 /* marco personalizado: líneas «Dimensión | Criterio» (o solo «Criterio») → misma estructura que los demás */
 function marcoCustom(txt) {
   const dims = new Map(); let i = 0;
@@ -3633,7 +3970,6 @@ function marcoCustom(txt) {
   });
   return {n: 'Marco personalizado', nota: '', temas: {}, dims: [...dims].map(([n, crits], k) => ({id: 'KD' + k, n, crits}))};
 }
-const marcoActual = () => S.marco === 'custom' ? marcoCustom(S.marcoTxt) : (MARCOS[S.marco] || MARCOS.acredita);
 const criterios = () => marcoActual().dims.flatMap(d => d.crits.map(c => ({...c, dim: d.id})));
 const critPorId = id => criterios().find(c => c.id === id);
 const temaCrit = tema => { const m = marcoActual().temas || {}; const id = m[tema]; return id && critPorId(id) ? id : (criterios()[0] || {}).id || ''; };
@@ -4203,6 +4539,75 @@ function clasificaFichero(ruta, texto = '') {
   return {cat: best, conf, why: why[best], sc};
 }
 
+/* ══ Cargar los criterios de una agencia desde su guía (Word, PDF o texto) ══
+   1) Por estructura (determinista): encabezados «Dimensión 1…», «Criterio 1.2…», «Standard 1.1…», «1.1 Título…». La cita es el propio encabezado.
+   2) Opcional con IA: cada criterio debe traer una cita literal que el código comprueba contra el texto. La persona revisa siempre. */
+const RX_DIM = /^(dimensi[oó]n|dimens[aã]o|dimensi[oó]|dimension|[aá]mbito|bloque|block|eje|axis|[aá]rea|factor)\s+([0-9]+|[IVX]+|[A-Z])\s*[.:\-–—)]*\s*(.{3,200})$/i;
+const RX_CRI = /^(criterio|criteri|crit[eé]rio|criterion|criteria|est[aá]ndar|est[aà]ndard|padr[aã]o|standard|subcriterio|componente|component|directriz)\s+([0-9]+(?:\.[0-9]+)*|[IVX]+|[A-Z])\s*[.:\-–—)]*\s*(.{3,200})$/i;
+const RX_NUM = /^([0-9]+\.[0-9]+(?:\.[0-9]+)?)\s*[.:\-–—)]?\s+([A-ZÁÉÍÓÚÑÀÈÒÇ].{3,160})$/;
+const STOP = new Set('para como entre sobre desde hasta cuando donde cada esta este estos estas tiene tienen sido seran debe deben mediante segun'.split(' '));
+function kwDe(txt) {
+  const f = {}; norm(txt).split(' ').filter(w => w.length >= 5 && !STOP.has(w)).forEach(w => { f[w] = (f[w] || 0) + 1; });
+  return Object.keys(f).sort((a, b) => f[b] - f[a]).slice(0, 14);
+}
+const limpiaTit = s => String(s).replace(/[.·…\s]{3,}\d{0,4}\s*$/, '').replace(/\s{2,}/g, ' ').trim();
+function detectaCriterios(texto) {
+  const L = String(texto || '').replace(/\r/g, '').split('\n').map(l => l.trim()).filter(Boolean);
+  const cuenta = rx => L.filter(l => rx.test(l)).length, usaCri = cuenta(RX_CRI) >= 2;
+  const usaNum = !usaCri && cuenta(RX_NUM) >= 3;
+  const heads = [];   // {tipo:'dim'|'cri', id, n, linea, i}
+  L.forEach((l, i) => {
+    let m = RX_DIM.exec(l); if (m && (usaCri || usaNum || true) && !RX_CRI.test(l)) { heads.push({tipo: 'dim', id: m[2], n: limpiaTit(m[3]), linea: l, i}); return; }
+    m = RX_CRI.exec(l); if (m) { heads.push({tipo: 'cri', id: m[2], n: limpiaTit(m[3]), linea: l, i}); return; }
+    if (usaNum && (m = RX_NUM.exec(l))) heads.push({tipo: 'cri', id: m[1], n: limpiaTit(m[2]), linea: l, i});
+  });
+  heads.forEach((h, k) => { const fin = k + 1 < heads.length ? heads[k + 1].i : Math.min(L.length, h.i + 8); h.desc = L.slice(h.i + 1, fin).filter(x => x.length > 12 && !/^\d+$/.test(x)).join(' ').slice(0, 450); });
+  const mejor = new Map(); heads.filter(h => h.tipo === 'cri' && h.n.length >= 4).forEach(h => { const k = norm(h.id + ' ' + h.n); const p = mejor.get(k); if (!p || h.desc.length > p.desc.length) mejor.set(k, h); });
+  const crits = new Set([...mejor.values()]), dims = [], usados = new Set(); let actual = null;
+  heads.forEach(h => {
+    if (h.tipo === 'dim') { const k = norm(h.id + ' ' + h.n); const ya = dims.find(d => d._k === k); actual = ya || (dims.push({_k: k, id: 'D' + (dims.length + 1), n: h.n, crits: []}), dims.at(-1)); return; }
+    if (!crits.has(h)) return; if (!actual) { actual = {_k: 'x', id: 'D1', n: 'Criterios', crits: []}; dims.push(actual); }
+    let id = h.id; while (usados.has(id)) id += '_' + (usados.size + 1); usados.add(id);
+    actual.crits.push({id, n: h.n, q: h.desc || h.n, kw: kwDe(h.n + ' ' + h.desc), cats: [], cita: h.linea, origen: 'estructura', ok: true});
+  });
+  const D = dims.filter(d => d.crits.length).map(({_k, ...d}) => d);
+  return {dims: D, n: D.reduce((a, d) => a + d.crits.length, 0)};
+}
+const TEMA_KW = {progreso: ['graduacion', 'abandono', 'eficiencia', 'progres', 'permanencia', 'duracion', 'tesis'], rendimiento: ['rendimiento', 'resultados de aprendizaje', 'aprendizaje', 'exito', 'calificacion', 'competencias', 'outcomes'], demanda: ['demanda', 'acceso', 'admision', 'matricula', 'nuevo ingreso', 'captacion', 'admission'], satisfaccion: ['satisfaccion', 'opinion', 'percepcion', 'satisfaction'], profesorado: ['profesorado', 'docente', 'personal academico', 'investigador', 'faculty', 'teaching staff', 'profesor'], recursos: ['recursos', 'infraestructura', 'instalaciones', 'servicios', 'facilities', 'apoyo', 'biblioteca', 'resources'], insercion: ['insercion', 'empleabilidad', 'egresad', 'graduad', 'employment'], calidad: ['calidad', 'garantia', 'sgic', 'mejora', 'quality', 'improvement', 'seguimiento']};
+function mapeaTemas(dims) {
+  const out = {}, cs = dims.flatMap(d => d.crits);
+  Object.entries(TEMA_KW).forEach(([tema, kws]) => {
+    let best = '', bs = 0;
+    cs.forEach(c => { const n = norm(c.n), q = norm(c.q || ''); const s = kws.reduce((a, k) => a + (n.includes(k) ? 2 : 0) + (q.includes(k) ? 1 : 0), 0); if (s > bs) { bs = s; best = c.id; } });
+    if (best) out[tema] = best;
+  });
+  return out;
+}
+const SYS_PERFIL = 'Eres un experto en aseguramiento de la calidad universitaria. Respondes SOLO con JSON válido. Extrae únicamente lo que esté escrito en el texto: no inventes criterios, números ni nombres.';
+function validaPerfilIA(raw, textoFuente) {
+  const out = []; (Array.isArray(raw && raw.dimensiones) ? raw.dimensiones : []).slice(0, 12).forEach(d => (Array.isArray(d.criterios) ? d.criterios : []).slice(0, 30).forEach(c => {
+    const n = String(c.nombre || '').trim(), id = String(c.id || '').trim(); if (!n || !id) return;
+    const cita = String(c.cita || '').trim(), ok = cita.length >= 12 && esFiel(textoFuente, cita);
+    out.push({dim: String(d.nombre || 'Criterios').trim() || 'Criterios', id, n, q: String(c.descripcion || n).trim(), cita, ok, origen: ok ? 'ia_ok' : 'ia_no'});
+  })); return out;
+}
+function dimsDeFilas(rows) {
+  const dims = [], usados = new Set();
+  rows.filter(r => r.incl !== false && String(r.n || '').trim()).forEach(r => {
+    const dn = String(r.dim || '').trim() || 'Criterios'; let d = dims.find(x => x.n === dn); if (!d) { d = {id: 'D' + (dims.length + 1), n: dn, crits: []}; dims.push(d); }
+    let id = String(r.id || '').trim() || String(usados.size + 1); while (usados.has(id)) id += '_' + (usados.size + 1); usados.add(id);
+    d.crits.push({id, n: String(r.n).trim(), q: String(r.q || r.n).trim(), kw: kwDe(r.n + ' ' + (r.q || '')), cats: []});
+  });
+  return dims;
+}
+function validaPerfilJSON(j) {
+  if (!j || j.formato !== 'acreditia-perfil/1' || !Array.isArray(j.dims) || !j.dims.length) return null;
+  const ok = j.dims.every(d => typeof d.n === 'string' && Array.isArray(d.crits) && d.crits.every(c => typeof c.id === 'string' && typeof c.n === 'string'));
+  if (!ok) return null;
+  const dims = j.dims.map((d, i) => ({id: String(d.id || 'D' + (i + 1)), n: d.n, crits: d.crits.map(c => ({id: c.id, n: c.n, q: String(c.q || c.n), kw: Array.isArray(c.kw) ? c.kw.map(String) : kwDe(c.n + ' ' + (c.q || '')), cats: []}))}));
+  return {nombre: String(j.nombre || 'Perfil importado').slice(0, 120), fuente: String(j.fuente || ''), dims, temas: j.temas && typeof j.temas === 'object' ? j.temas : mapeaTemas(dims)};
+}
+
 /* ══ IA local: Ollama, LM Studio y WebLLM (en el propio navegador). Nada sale del equipo si el servidor es localhost. ══
    Se añaden como proveedores a los de Forja (OpenAI, Gemini, Claude) sobreescribiendo llm(), listaModelos(), pideClave() y cargaIA(). */
 const LOCAL = {ollama: {url: 'http://localhost:11434', ctx: 8192, bud: 9000, max: 1800}, lmstudio: {url: 'http://localhost:1234', ctx: 4096, bud: 6000, max: 1500}, webllm: {url: '', ctx: 4096, bud: 4200, max: 1000}};
@@ -4318,10 +4723,11 @@ const GLOS = [
   ['Privacidad', 'Todo se guarda solo en este navegador. Con un proveedor en la nube salen los pasajes con los datos personales enmascarados, tras un aviso previo. Con IA local (WebLLM, Ollama o LM Studio en tu equipo) no sale nada.'],
   ['Marcos de evaluación', 'ANECA/ACREDITA, ESG, ARCU-SUR, un marco común iberoamericano propio o uno personalizado que pegues. Los resúmenes son orientativos: contrasta con la guía vigente de tu agencia.'],
   ['Límites', 'No sustituye el juicio del comité ni la guía de la agencia, no comprueba el cumplimiento normativo y no lee imágenes ni escaneos sin texto. Los resultados de IA local dependen mucho del tamaño del modelo.']
+  ,['Cargar los criterios de tu agencia', 'Sube la guía de tu agencia (Word, PDF o texto) y AcreditIA detecta por la estructura sus dimensiones y criterios. Después puedes completarlos con IA (cada criterio debe traer una cita literal que el código comprueba), corregirlos a mano, guardarlos como marco y exportarlos para compartirlos con otras personas o universidades.']
 ];
 const nEs = x => (x && typeof x === 'object') ? x.es : String(x ?? '');
 const nuevoRes = () => ({hall: {}, crit: {}, obj: [], sint: null, txt: {}, deb: [], acc: [], arr: [], preg: [], hechas: {}, archivo: null, verif: null});
-const nuevoEstado = () => ({titulo: {nombre: '', centro: '', univ: '', curso: '', proceso: 'renovacion'}, marco: 'acredita', marcoTxt: '', nombres: '', evid: [], nev: 0, indic: [], propInd: [], res: nuevoRes(), decis: [], log: [], prompts: {}, modo: 'completo', alcance: 'todos', precio: {ent: '', sal: ''}, esEjemplo: false, exFase: 0, anexoComision: false});
+const nuevoEstado = () => ({titulo: {nombre: '', centro: '', univ: '', curso: '', proceso: 'renovacion'}, marco: 'acredita', marcoTxt: '', nombres: '', evid: [], nev: 0, indic: [], propInd: [], res: nuevoRes(), decis: [], log: [], prompts: {}, modo: 'completo', alcance: 'todos', precio: {ent: '', sal: ''}, esEjemplo: false, exFase: 0, anexoComision: false, perfiles: []});
 let S = nuevoEstado();
 let ENVIO_OK = false, corre = false, parar = false;
 const chip = (c, tx) => `<span class="fa-chip ${c}">${esc(tx)}</span>`;
@@ -4363,20 +4769,91 @@ window.addEventListener('langchange', async () => { if (S.esEjemplo) { const f =
 /* ── pantalla 1: título y marco ── */
 function pintaTitulo() {
   const T = S.titulo; $('tNombre').value = T.nombre; $('tCentro').value = T.centro; $('tUniv').value = T.univ; $('tCurso').value = T.curso; $('tProceso').value = T.proceso;
-  $('selMarco').innerHTML = [...Object.entries(MARCOS).map(([k, m]) => `<option value="${k}">${esc(N(m.n))}</option>`), `<option value="custom">${esc(t('Marco personalizado (pegas tus criterios)'))}</option>`].join(''); $('selMarco').value = S.marco;
+  $('selMarco').innerHTML = [...Object.entries(MARCOS).map(([k, m]) => `<option value="${k}">${esc(N(m.n))}</option>`), ...(S.perfiles || []).map(pf => `<option value="perfil:${esc(pf.id)}">${esc(pf.nombre)}</option>`), `<option value="custom">${esc(t('Marco personalizado (pegas tus criterios)'))}</option>`].join(''); $('selMarco').value = S.marco;
   $('marcoTxt').value = S.marcoTxt; $('fMarcoTxt').style.display = S.marco === 'custom' ? '' : 'none'; $('tNombres').value = S.nombres;
   const m = marcoActual(); $('marcoNota').textContent = N(m.nota || '');
   $('marcoLista').innerHTML = m.dims.map(d => `<li><b>${esc(N(d.n))}</b><ul>${d.crits.map(c => `<li>${esc(c.id)} · ${esc(N(c.n))}</li>`).join('')}</ul></li>`).join('') || `<li class="muted">${esc(t('Escribe una línea por criterio, con el formato «Dimensión | Criterio».'))}</li>`;
   const w = ventanaPlan(); $('planCurso').textContent = w ? t('El plan de mejora cubrirá el curso {0}.', w.etiqueta) : t('Escribe el curso evaluado con el formato 2024-25 para delimitar el plan de mejora.');
+  pintaPerfil(); pintaPerfiles();
 }
 const LIGA = {tNombre: 'nombre', tCentro: 'centro', tUniv: 'univ', tCurso: 'curso'};
 Object.keys(LIGA).forEach(id => $(id).addEventListener('input', e => { S.titulo[LIGA[id]] = e.target.value; guarda(); if (id === 'tCurso') { const w = ventanaPlan(); $('planCurso').textContent = w ? t('El plan de mejora cubrirá el curso {0}.', w.etiqueta) : t('Escribe el curso evaluado con el formato 2024-25 para delimitar el plan de mejora.'); } }));
 $('tProceso').onchange = e => { S.titulo.proceso = e.target.value; guarda(); };
 $('tNombres').addEventListener('input', e => { S.nombres = e.target.value; guarda(); });
 $('marcoTxt').addEventListener('input', e => { S.marcoTxt = e.target.value; guarda(); pintaTitulo(); });
-$('selMarco').onchange = e => {
-  if (Object.keys(S.res.crit).length && !confirm(t('Cambiar de marco borra el diagnóstico y los textos ya generados (las evidencias y los indicadores se conservan). ¿Continuar?'))) { e.target.value = S.marco; return; }
-  S.marco = e.target.value; S.res = nuevoRes(); S.decis = []; S.indic.forEach(i => { if (i.crit && !critPorId(i.crit)) i.crit = ''; }); guarda(); pintaTitulo();
+$('selMarco').onchange = e => { if (!cambiaMarco(e.target.value)) { e.target.value = S.marco; return; } guarda(); pintaTitulo(); };
+
+/* ── cargar los criterios de la agencia desde su guía ── */
+let PERF = null;   // {texto, fuente, nombre, rows:[{dim,id,n,q,origen,ok,incl}]}
+const ORIGEN_N = {estructura: 'estructura del documento', ia_ok: 'IA con cita verificada', ia_no: 'IA sin cita verificada', manual: 'manual'};
+function pintaPerfil() {
+  if (!PERF) { $('perfilRev').innerHTML = ''; return; }
+  const R = PERF.rows;
+  $('perfilRev').innerHTML = `<h3>${esc(t('Criterios detectados'))}</h3><div class="field"><label>${esc(t('Nombre del marco'))}</label><input type="text" id="perfNombre" value="${esc(PERF.nombre)}"></div>
+    <div class="table-wrap"><table><thead><tr><th></th><th>${esc(t('Dimensión'))}</th><th>ID</th><th>${esc(t('Criterio'))}</th><th>${esc(t('Descripción'))}</th><th>${esc(t('Origen'))}</th><th></th></tr></thead><tbody>${R.map((r, k) => `<tr data-k="${k}"><td><input type="checkbox" data-f="incl"${r.incl !== false ? ' checked' : ''}></td><td><input type="text" data-f="dim" value="${esc(r.dim)}"></td><td><input type="text" data-f="id" value="${esc(r.id)}" size="5"></td><td><input type="text" data-f="n" value="${esc(r.n)}"></td><td><textarea rows="2" data-f="q">${esc(r.q)}</textarea></td><td>${chip(r.origen === 'ia_no' ? 'error' : r.origen === 'manual' ? '' : 'ok', t(ORIGEN_N[r.origen] || ORIGEN_N.manual))}</td><td><button class="btn btn-ghost btn-sm" data-delrow="${k}" type="button" aria-label="${esc(t('Quitar'))}">✕</button></td></tr>`).join('')}</tbody></table></div>
+    <div class="actions"><button class="btn btn-ghost btn-sm" id="btnAddFila" type="button">${esc(t('Añadir una fila'))}</button><button class="btn btn-primary" id="btnGuardaPerfil" type="button">${esc(t('Guardar y usar como marco'))}</button><button class="btn btn-ghost" id="btnExpPerfilRev" type="button">${esc(t('Exportar el perfil (JSON)'))}</button><button class="btn btn-ghost" id="btnCancelaPerfil" type="button">${esc(t('Cancelar'))}</button></div>`;
+}
+function pintaPerfiles() {
+  const L = S.perfiles || [];
+  $('perfilesGuardados').innerHTML = L.length ? `<h3>${esc(t('Marcos guardados'))}</h3><ul class="fa-ul">${L.map(pf => `<li><b>${esc(pf.nombre)}</b> <small class="muted">· ${esc(t('{0} criterios', pf.dims.reduce((a, d) => a + d.crits.length, 0)))}</small> <button class="btn btn-ghost btn-sm" data-usa="${esc(pf.id)}" type="button">${esc(t('Usar'))}</button> <button class="btn btn-ghost btn-sm" data-exp="${esc(pf.id)}" type="button">${esc(t('Exportar el perfil (JSON)'))}</button> <button class="btn btn-ghost btn-sm" data-borra="${esc(pf.id)}" type="button">${esc(t('Eliminar'))}</button></li>`).join('')}</ul>` : '';
+}
+const perfilJSON = (nombre, fuente, dims, temas) => JSON.stringify({formato: 'acreditia-perfil/1', nombre, fuente: fuente || '', exportado: new Date().toISOString(), dims: dims.map(d => ({id: d.id, n: d.n, crits: d.crits.map(c => ({id: c.id, n: c.n, q: c.q, kw: c.kw}))})), temas: temas || mapeaTemas(dims)}, null, 1);
+function cambiaMarco(id) {
+  if (Object.keys(S.res.crit).length && !confirm(t('Cambiar de marco borra el diagnóstico y los textos ya generados (las evidencias y los indicadores se conservan). ¿Continuar?'))) return false;
+  S.marco = id; S.res = nuevoRes(); S.decis = []; S.indic.forEach(i => { if (i.crit && !critPorId(i.crit)) i.crit = ''; }); return true;
+}
+function cargaTextoGuia(texto, fuente) {
+  const d = detectaCriterios(texto); PERF = {texto, fuente, nombre: fuente ? fuente.replace(/\.[^.]+$/, '') : '', rows: d.dims.flatMap(x => x.crits.map(c => ({dim: x.n, id: c.id, n: c.n, q: c.q, origen: 'estructura', ok: true, incl: true})))};
+  pintaPerfil();
+  toast(d.n ? t('Se han detectado {0} criterios en {1} dimensiones. Revísalos y corrige lo que haga falta.', d.n, d.dims.length) : t('No se han detectado criterios por la estructura. Prueba «Completar con IA» o pega solo el capítulo de criterios.'), 7000);
+}
+$('fGuia').onchange = async e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return; try { const x = await leeFichero(f); $('guiaTxt').value = x.texto.slice(0, 400000); cargaTextoGuia(x.texto, f.name); } catch (er) { toast(er.message === 'tipo' ? t('«{0}»: solo se leen documentos con texto (no imágenes, audio ni vídeo).', f.name) : er.message, 6000); } };
+$('btnDetecta').onclick = () => { const tx = $('guiaTxt').value; if (tx.trim().length < 30) return toast(t('Sube la guía o pega el texto de los criterios.')); cargaTextoGuia(tx, PERF ? PERF.fuente : ''); };
+$('btnDetectaIA').onclick = async () => {
+  if (S.esEjemplo) return toast(t('No disponible en el ejemplo: carga primero tus propios datos.'));
+  const tx = $('guiaTxt').value; if (tx.trim().length < 30) return toast(t('Sube la guía o pega el texto de los criterios.')); if (corre) return; if (!PERF) cargaTextoGuia(tx, '');
+  PERF.texto = tx; if (!pideClave()) return; corre = true; setBusy(true);
+  try {
+    const P = presupuesto(), chunks = []; let cur = ''; pasajesDe({id: 'G1', cat: 'seg', nombre: 'guía', texto: tx}).forEach(ps => { if (cur && (cur + ps.texto).length > P.bud) { chunks.push(cur); cur = ''; } cur += (cur ? '\n\n' : '') + ps.texto; }); if (cur) chunks.push(cur);
+    const use = chunks.slice(0, 12), envio = c => esLocalActivo() ? c : scrubTodo(c).t; let nuevos = 0;
+    if (!esLocalActivo() && !ENVIO_OK && !(await pideEnvio(envio(use[0]), scrubTodo(use[0]).n))) throw new Error(t('Envío cancelado.'));
+    for (let i = 0; i < use.length; i++) {
+      $('perfilRev').insertAdjacentHTML('afterbegin', `<p class="help" id="perfEstado"><span class="spin"></span> ${esc(t('Leyendo {0} de {1}…', i + 1, use.length))}</p>`);
+      const fuente = envio(use[i]), t0 = performance.now(); let raw = null, err = '';
+      try { raw = await llmJSON([{role: 'system', content: SYS_PERFIL}, {role: 'user', content: `Extrae la estructura de dimensiones y criterios (o estándares) de esta guía de evaluación de una agencia de calidad. Solo lo que esté escrito. Para cada criterio: id tal como figura, nombre, descripción de 1-2 frases con lo que se evalúa y una cita LITERAL del texto (8-30 palabras, por ejemplo el encabezado). Escribe nombres y descripciones en el idioma del texto. JSON: {"dimensiones":[{"nombre":"","criterios":[{"id":"","nombre":"","descripcion":"","cita":""}]}]}\n\nTEXTO:\n${fuente}`}], {max: P.max}); }
+      catch (e) { err = e.message; throw e; } finally { S.log.push({ts: Date.now(), ag: 'perfil', crit: '', in: fuente.length, out: raw ? JSON.stringify(raw).length : 0, ms: Math.round(performance.now() - t0), ok: !err, err, prov: getProv()}); }
+      validaPerfilIA(raw, fuente).forEach(r => { if (!PERF.rows.some(x => norm(x.n) === norm(r.n))) { PERF.rows.push({...r, incl: r.ok}); nuevos++; } });
+      pintaPerfil();
+    }
+    toast(nuevos ? t('La IA ha añadido {0} criterios.', nuevos) : t('La IA no encontró criterios nuevos.'), 6000);
+  } catch (e) { toast(e.message, 8000); } finally { corre = false; setBusy(false); guarda(); pintaPerfil(); }
+};
+$('perfilRev').addEventListener('change', e => {
+  if (e.target.id === 'perfNombre') { PERF.nombre = e.target.value; return; } const tr = e.target.closest('tr[data-k]'); if (!tr) return; const r = PERF.rows[+tr.dataset.k], f = e.target.dataset.f;
+  if (f === 'incl') r.incl = e.target.checked; else if (f) { r[f] = e.target.value; if (f !== 'dim' && r.origen !== 'manual') { r.origen = 'manual'; pintaPerfil(); } }
+});
+$('perfilRev').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.delrow !== undefined) { PERF.rows.splice(+b.dataset.delrow, 1); pintaPerfil(); }
+  if (b.id === 'btnAddFila') { const u = PERF.rows.at(-1); PERF.rows.push({dim: u ? u.dim : 'Criterios', id: String(PERF.rows.length + 1), n: '', q: '', origen: 'manual', ok: true, incl: true}); pintaPerfil(); }
+  if (b.id === 'btnCancelaPerfil') { PERF = null; pintaPerfil(); }
+  if (b.id === 'btnExpPerfilRev') { const d = dimsDeFilas(PERF.rows); if (!d.length) return toast(t('Añade al menos un criterio.')); dl(`perfil_${slug(PERF.nombre || 'marco')}.json`, perfilJSON(PERF.nombre || 'Marco', PERF.fuente, d), 'application/json'); }
+  if (b.id === 'btnGuardaPerfil') {
+    const nombre = (PERF.nombre || '').trim(); if (!nombre) return toast(t('Escribe un nombre para el marco.')); const dims = dimsDeFilas(PERF.rows); if (!dims.length) return toast(t('Añade al menos un criterio.'));
+    const id = 'p' + Date.now().toString(36); S.perfiles = [...(S.perfiles || []), {id, nombre, fuente: PERF.fuente || '', dims, temas: mapeaTemas(dims), creado: new Date().toISOString()}];
+    if (!cambiaMarco('perfil:' + id)) { guarda(); pintaTitulo(); return; } PERF = null; guarda(); pintaTitulo(); toast(t('Marco «{0}» guardado y seleccionado.', nombre));
+  }
+});
+$('perfilesGuardados').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.usa) { if (cambiaMarco('perfil:' + b.dataset.usa)) { guarda(); pintaTitulo(); } }
+  if (b.dataset.exp) { const pf = S.perfiles.find(x => x.id === b.dataset.exp); dl(`perfil_${slug(pf.nombre)}.json`, perfilJSON(pf.nombre, pf.fuente, pf.dims, pf.temas), 'application/json'); }
+  if (b.dataset.borra) { const pf = S.perfiles.find(x => x.id === b.dataset.borra); S.perfiles = S.perfiles.filter(x => x.id !== b.dataset.borra); if (S.marco === 'perfil:' + b.dataset.borra) { S.marco = 'acredita'; S.res = nuevoRes(); S.decis = []; } guarda(); pintaTitulo(); toast(t('El marco «{0}» se ha eliminado.', pf.nombre)); }
+});
+$('fPerfil').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try { const v = validaPerfilJSON(JSON.parse(await f.text())); if (!v) throw new Error(t('El fichero no es un perfil de AcreditIA.')); const id = 'p' + Date.now().toString(36); S.perfiles = [...(S.perfiles || []), {id, ...v, creado: new Date().toISOString()}]; if (cambiaMarco('perfil:' + id)) { guarda(); pintaTitulo(); toast(t('Perfil importado: «{0}».', v.nombre)); } else { guarda(); pintaTitulo(); } }
+  catch (er) { toast(er.message.startsWith('El fichero') || er.message.startsWith('O ficheiro') ? er.message : t('El fichero no es un perfil de AcreditIA.'), 6000); }
 };
 
 /* ── pantalla 2: evidencias ── */
@@ -4857,7 +5334,7 @@ function pintaAudit() {
   $('auResumen').innerHTML = `<p>${esc(t('{0} llamadas a la IA · ≈ {1} k tokens enviados y ≈ {2} k recibidos (estimados por longitud).', L.length, nf(tin / 3600), nf(tout / 3600)))}</p><p>${chip(v.items[1] === v.items[0] ? 'ok' : 'aviso', t('{0} de {1} puntos con evidencia verificada', v.items[1], v.items[0]))} ${chip(v.hall[1] === v.hall[0] ? 'ok' : 'aviso', t('{0} de {1} hallazgos verificados', v.hall[1], v.hall[0]))}</p>`;
   $('auDesc').innerHTML = des.length ? `<ul class="fa-ul">${des.map(d => `<li>⚠ ${esc(d.texto)} <small class="muted">· ${esc(d.ag)}</small></li>`).join('')}</ul>` : `<p class="muted">${esc(t('Ninguna afirmación descartada.'))}</p>`;
   $('auDec').innerHTML = S.decis.length ? `<div class="table-wrap"><table><thead><tr><th>${esc(t('Criterio'))}</th><th>${esc(t('Propuesta IA'))}</th><th>${esc(t('Tras reglas'))}</th><th>${esc(t('Confirmada'))}</th><th>${esc(t('Modo'))}</th><th>${esc(t('Fecha'))}</th><th>${esc(t('Huella'))}</th></tr></thead><tbody>${S.decis.map(d => `<tr><td>${esc(d.crit)}</td><td>${esc(d.propuesta || '—')}</td><td>${esc(d.ajustada)}</td><td>${esc(d.final)}</td><td>${esc(d.modo === 'persona' ? t('persona') : t('aceptada en bloque'))}</td><td>${esc(new Date(d.ts).toLocaleString(locale()))}</td><td><code>${esc(d.h.slice(0, 10))}</code></td></tr>`).join('')}</tbody></table></div><p class="help">${esc(t('La cadena de huellas detecta ediciones del fichero exportado; es una señal de transparencia, no una prueba.'))}</p>` : `<p class="muted">${esc(t('Aún no hay decisiones registradas.'))}</p>`;
-  $('auLog').innerHTML = L.length ? `<div class="table-wrap"><table><thead><tr><th>${esc(t('Agente'))}</th><th>${esc(t('Criterio'))}</th><th>${esc(t('Proveedor'))}</th><th>ms</th><th>${esc(t('Entrada'))}</th><th>${esc(t('Salida'))}</th><th></th></tr></thead><tbody>${L.slice(-40).reverse().map(x => `<tr><td>${esc(N(agente(x.ag).n))}</td><td>${esc(x.crit)}</td><td>${esc(x.prov)}</td><td>${x.ms}</td><td>${nf(x.in)}</td><td>${nf(x.out)}</td><td>${x.ok ? '✓' : '✕ ' + esc(x.err).slice(0, 60)}</td></tr>`).join('')}</tbody></table></div>` : `<p class="muted">${esc(t('Aún no hay llamadas.'))}</p>`;
+  $('auLog').innerHTML = L.length ? `<div class="table-wrap"><table><thead><tr><th>${esc(t('Agente'))}</th><th>${esc(t('Criterio'))}</th><th>${esc(t('Proveedor'))}</th><th>ms</th><th>${esc(t('Entrada'))}</th><th>${esc(t('Salida'))}</th><th></th></tr></thead><tbody>${L.slice(-40).reverse().map(x => `<tr><td>${esc(N((agente(x.ag) || {n: {es: x.ag}}).n))}</td><td>${esc(x.crit)}</td><td>${esc(x.prov)}</td><td>${x.ms}</td><td>${nf(x.in)}</td><td>${nf(x.out)}</td><td>${x.ok ? '✓' : '✕ ' + esc(x.err).slice(0, 60)}</td></tr>`).join('')}</tbody></table></div>` : `<p class="muted">${esc(t('Aún no hay llamadas.'))}</p>`;
 }
 $('btnLimpiaLog').onclick = () => { S.log = []; guarda(); pintaAudit(); };
 
