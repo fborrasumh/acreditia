@@ -22,15 +22,15 @@ Autoinforme y plan de mejora de un título, con evidencias verificadas. Aplicaci
 
 ## Cómo se usa la IA
 
-Con la propia clave de OpenAI, Google Gemini o Anthropic Claude (se guarda solo en el navegador), o con IA local: WebLLM en el navegador (WebGPU), Ollama o LM Studio. No hace falta servidor.
+Con la propia clave de OpenAI, Google Gemini o Anthropic Claude (se guarda solo en el navegador). No hace falta servidor.
 
 ## Privacidad
 
-Evidencias, indicadores y resultados se guardan solo en este navegador (IndexedDB). Con un proveedor en la nube salen los pasajes necesarios con correos, DNI/NIE, teléfonos, tratamientos («Dr. …») y los nombres indicados enmascarados, tras un aviso previo con muestra. Con IA local en localhost no sale nada y no se enmascara. El JSON exportado incluye el texto de las evidencias y no incluye claves.
+Evidencias, indicadores y resultados se guardan solo en este navegador (IndexedDB). Con un proveedor en la nube salen los pasajes necesarios con correos, DNI/NIE, teléfonos, tratamientos («Dr. …») y los nombres indicados enmascarados, tras un aviso previo con muestra. El JSON exportado incluye el texto de las evidencias y no incluye claves.
 
 ## Límites
 
-No hace OCR ni lee imágenes. No sustituye el juicio del comité ni la guía de la agencia ni comprueba el cumplimiento normativo. La IA puede equivocarse: la persona debe revisar cada valoración, texto y acción. Los modelos locales pequeños (contexto de unos 4096 tokens) rinden menos. Probado con IA simulada; no se ha probado con claves reales ni con WebLLM, Ollama o LM Studio reales.
+No hace OCR ni lee imágenes. No sustituye el juicio del comité ni la guía de la agencia ni comprueba el cumplimiento normativo. La IA puede equivocarse: la persona debe revisar cada valoración, texto y acción. Probado con IA simulada; no se ha probado con claves reales.
 
 ## Traducciones
 

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0F2237">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'wasm-unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: blob:; media-src blob: data:; connect-src https://api.openai.com https://generativelanguage.googleapis.com https://api.anthropic.com http://localhost:11434 http://127.0.0.1:11434 http://localhost:1234 http://127.0.0.1:1234 https://huggingface.co https://*.huggingface.co https://*.hf.co https://raw.githubusercontent.com https://cdn.jsdelivr.net; worker-src blob: https://cdnjs.cloudflare.com; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: blob:; media-src blob: data:; connect-src https://api.openai.com https://generativelanguage.googleapis.com https://api.anthropic.com; worker-src blob: https://cdnjs.cloudflare.com; base-uri 'none'; form-action 'none'">
 <meta name="author" content="Fernando Borrás Rocher; David León Espí">
 <meta name="description" content="Autoinforme y plan de mejora de un título, con evidencias verificadas">
 <title>AcreditIA · Autoinforme y plan de mejora de un título, con evidencias verificadas</title><link rel="preconnect" href="https://fonts.googleapis.com">
@@ -494,7 +494,7 @@ td input[type=text],td select{width:100%;min-width:70px;padding:6px 8px;border:1
   <div class="card"><ul id="marcosLista" class="fa-ul"></ul><p class="help" data-i18n="s.marcos.nota">Los resúmenes de los marcos oficiales son orientativos: contrasta siempre con la guía vigente de tu agencia.</p></div>
   <h2 class="sec-title" data-i18n="Dónde va cada cosa">Dónde va cada cosa</h2>
   <div class="zonas"><div class="zona l"><h4 data-i18n="Siempre en tu ordenador">Siempre en tu ordenador</h4><ul data-i18n="s.zl">
-<li>Tus evidencias, tus indicadores y los resultados, guardados en este navegador</li><li>Tus claves de IA</li><li>Todas las comprobaciones, los cálculos y las descargas</li><li>Con IA local (WebLLM, Ollama, LM Studio): también la propia IA</li></ul></div>
+<li>Tus evidencias, tus indicadores y los resultados, guardados en este navegador</li><li>Tus claves de IA</li><li>Todas las comprobaciones, los cálculos y las descargas</li></ul></div>
     <div class="zona n"><h4 data-i18n="Sale hacia tu proveedor de IA">Sale hacia tu proveedor de IA</h4><ul data-i18n="s.zn">
 <li>Solo con un proveedor en la nube: los pasajes que decides analizar, con correos, DNI, teléfonos y los nombres que indiques enmascarados</li><li>Antes del primer envío ves una muestra de lo que sale</li></ul></div></div>
 </section>
@@ -517,7 +517,7 @@ td input[type=text],td select{width:100%;min-width:70px;padding:6px 8px;border:1
     <div class="field"><label for="guiaTxt" data-i18n="…o pega el texto de los criterios">…o pega el texto de los criterios</label><textarea id="guiaTxt" rows="4"></textarea></div>
     <div class="actions"><button class="btn btn-primary btn-sm" id="btnDetecta" type="button" data-i18n="Detectar criterios">Detectar criterios</button><button class="btn btn-ghost btn-sm" id="btnDetectaIA" type="button" data-i18n="Completar con IA">Completar con IA</button></div>
     <div id="perfilRev"></div><div id="perfilesGuardados"></div></div>
-  <div class="card"><div class="field"><label for="tNombres" data-i18n="Nombres de personas a enmascarar (separados por comas)">Nombres de personas a enmascarar (separados por comas)</label><textarea id="tNombres" rows="2" placeholder="Ana Pérez, Luis Gómez"></textarea></div><p class="help" data-i18n="s.nombres.ayuda">Antes de enviar texto a un proveedor en la nube se sustituyen por [PERSONA], además de correos, DNI/NIE, teléfonos y tratamientos como «Dr. …». Con IA local no se enmascara nada porque no sale del equipo.</p></div>
+  <div class="card"><div class="field"><label for="tNombres" data-i18n="Nombres de personas a enmascarar (separados por comas)">Nombres de personas a enmascarar (separados por comas)</label><textarea id="tNombres" rows="2" placeholder="Ana Pérez, Luis Gómez"></textarea></div><p class="help" data-i18n="s.nombres.ayuda">Antes de enviar texto a un proveedor en la nube se sustituyen por [PERSONA], además de correos, DNI/NIE, teléfonos y tratamientos como «Dr. …».</p></div>
 </section>
 
 <!-- 2 · EVIDENCIAS -->
@@ -589,12 +589,11 @@ td input[type=text],td select{width:100%;min-width:70px;padding:6px 8px;border:1
 <div class="bottomnav"><div class="bn-in"><button class="btn btn-ghost" id="navBack" type="button"><svg class="i"><use href="#i-left"/></svg><span data-i18n="Atrás">Atrás</span></button><div class="bn-hint" id="navHint"></div><button class="btn btn-primary" id="navNext" type="button"><span id="navNextTxt">Siguiente</span><svg class="i"><use href="#i-right"/></svg></button></div></div>
 
 <div class="modal" id="mIA" role="dialog" aria-modal="true" aria-labelledby="mIAT"><div class="modal-box"><div class="modal-head"><h2 id="mIAT" data-i18n="Inteligencia artificial">Inteligencia artificial</h2><button type="button" data-close data-i18n="Cerrar">Cerrar</button></div><div class="modal-body">
-  <div class="field"><label for="selProv" data-i18n="Proveedor">Proveedor</label><select id="selProv"><optgroup label="Nube"><option value="openai">OpenAI</option><option value="gemini">Google Gemini</option><option value="anthropic">Anthropic Claude</option></optgroup><optgroup label="Local"><option value="webllm">WebLLM (navegador)</option><option value="ollama">Ollama (local)</option><option value="lmstudio">LM Studio (local)</option></optgroup></select></div>
-  <div class="field" id="fKey"><label for="apiKey" id="lblKey">Tu clave de API</label><div class="keyrow"><input type="password" id="apiKey" autocomplete="off"><button class="eye" id="btnEye" type="button" aria-label="Ver" data-i18n-attr="aria-label:Ver"><svg class="i"><use href="#i-eye"/></svg></button></div></div>
+  <div class="field"><label for="selProv" data-i18n="Proveedor">Proveedor</label><select id="selProv"><option value="openai">OpenAI</option><option value="gemini">Google Gemini</option><option value="anthropic">Anthropic Claude</option></select></div>
+  <div class="field"><label for="apiKey" data-i18n="Tu clave de API">Tu clave de API</label><div class="keyrow"><input type="password" id="apiKey" autocomplete="off"><button class="eye" id="btnEye" type="button" aria-label="Ver" data-i18n-attr="aria-label:Ver"><svg class="i"><use href="#i-eye"/></svg></button></div></div>
   <div class="field"><label for="modelo" data-i18n="Modelo">Modelo</label><input type="text" id="modelo" list="modelos"><datalist id="modelos"></datalist></div>
   <div class="actions"><button class="btn btn-ghost btn-sm" id="btnModelos" type="button" data-i18n="Ver los modelos de mi clave">Ver los modelos de mi clave</button></div>
-  <div class="actions" id="fLocal" style="display:none"><button class="btn btn-ghost btn-sm" id="btnCargaLocal" type="button"></button></div>
-  <p class="help" id="iaEstado"></p></div></div></div>
+  <p class="help" id="iaEstado" data-i18n="f.ia.ayuda">La clave se guarda solo en este navegador y se envía únicamente a tu proveedor. Cada persona usa la suya y paga su propio uso. Elige un modelo económico: este uso no necesita el más potente.</p></div></div></div>
 <div class="modal" id="mEnvio" role="dialog" aria-modal="true" aria-labelledby="mEnT"><div class="modal-box"><div class="modal-head"><h2 id="mEnT" data-i18n="Esto es lo que saldría hacia tu proveedor de IA">Esto es lo que saldría hacia tu proveedor de IA</h2><button type="button" data-close data-i18n="Cerrar">Cerrar</button></div><div class="modal-body"><div id="envioInfo"></div><pre class="fa-pre" id="envioTxt"></pre><label class="fa-chk" style="margin:12px 0"><input type="checkbox" id="envioOk"> <span data-i18n="f.envio.chk">He revisado la muestra y confirmo que puede salir de mi ordenador.</span></label><div class="actions"><button class="btn btn-primary" id="envioSi" type="button" disabled data-i18n="s.enviar">Enviar y analizar</button><button class="btn btn-ghost" id="envioNo" type="button" data-i18n="Cancelar">Cancelar</button></div></div></div></div>
 <div class="modal" id="mHelp" role="dialog" aria-modal="true" aria-labelledby="mHelpT"><div class="modal-box"><div class="modal-head"><h2 id="mHelpT" data-i18n="Ayuda">Ayuda</h2><button type="button" data-close data-i18n="Cerrar">Cerrar</button></div><div class="modal-body"><div class="glos" id="glos"></div></div></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -1112,11 +1111,11 @@ const I18N = {
   "Los 19 agentes": "The 19 agents",
   "Se agrupan en cinco fases: lectura, diagnóstico, redacción, plan de mejora y revisión. Los que son de código no usan IA. Las instrucciones de los agentes de IA se pueden editar.": "They are grouped in five phases: reading, diagnosis, drafting, improvement plan and review. Code agents use no AI. The instructions of the AI agents can be edited.",
   "Privacidad": "Privacy",
-  "Todo se guarda solo en este navegador. Con un proveedor en la nube salen los pasajes con los datos personales enmascarados, tras un aviso previo. Con IA local (WebLLM, Ollama o LM Studio en tu equipo) no sale nada.": "Everything is stored only in this browser. With a cloud provider, the passages go out with personal data masked, after a prior notice. With local AI (WebLLM, Ollama or LM Studio on your computer) nothing leaves it.",
+  "Todo se guarda solo en este navegador. Con un proveedor en la nube salen los pasajes con los datos personales enmascarados, tras un aviso previo.": "Everything is stored only in this browser. With a cloud provider, the passages go out with personal data masked, after a prior notice.",
   "Marcos de evaluación": "Evaluation frameworks",
   "ANECA/ACREDITA, ESG, ARCU-SUR, un marco común iberoamericano propio o uno personalizado que pegues. Los resúmenes son orientativos: contrasta con la guía vigente de tu agencia.": "ANECA/ACREDITA, ESG, ARCU-SUR, AcreditIA's own common Ibero-American framework, or a custom one you paste. The summaries are indicative: check against your agency's current guide.",
   "Límites": "Limits",
-  "No sustituye el juicio del comité ni la guía de la agencia, no comprueba el cumplimiento normativo y no lee imágenes ni escaneos sin texto. Los resultados de IA local dependen mucho del tamaño del modelo.": "It does not replace the committee's judgement or the agency's guide, does not check regulatory compliance and does not read images or scans without text. Local AI results depend heavily on model size.",
+  "No sustituye el juicio del comité ni la guía de la agencia, no comprueba el cumplimiento normativo y no lee imágenes ni escaneos sin texto.": "It does not replace the committee's judgement or the agency's guide, does not check regulatory compliance and does not read images or scans without text.",
   "Tienes un proyecto guardado en este navegador.": "You have a project saved in this browser.",
   "Continuar": "Continue",
   "Empezar de cero": "Start from scratch",
@@ -1347,23 +1346,9 @@ const I18N = {
   "Entrada": "Input",
   "Salida": "Output",
   "Aún no hay llamadas.": "No calls yet.",
-  "Cargando el modelo…": "Loading the model…",
-  "Dirección del servidor": "Server address",
   "Tu clave de API": "Your API key",
-  "Descargar y cargar el modelo": "Download and load the model",
-  "Probar la conexión": "Test the connection",
-  "Conexión correcta: {0} modelo(s) disponibles.": "Connection OK: {0} model(s) available.",
-  "{0} modelos disponibles; escribe o elige uno.": "{0} models available; type or choose one.",
-  "Modelo cargado: ya puedes trabajar sin conexión con un servidor.": "Model loaded: you can now work without a server connection.",
-  "Este navegador no tiene WebGPU, que WebLLM necesita. Usa Chrome o Edge recientes, o elige Ollama o LM Studio.": "This browser has no WebGPU, which WebLLM needs. Use a recent Chrome or Edge, or choose Ollama or LM Studio.",
-  "No se pudo cargar WebLLM: ¿hay conexión?": "Could not load WebLLM: is there a connection?",
-  "No se puede conectar con {0} en {1}. ¿Está en marcha y permite este origen (OLLAMA_ORIGINS)? El navegador puede pedirte permiso para acceder a la red local.": "Cannot connect to {0} at {1}. Is it running and does it allow this origin (OLLAMA_ORIGINS)? The browser may ask your permission to access the local network.",
-  "El modelo «{0}» no está instalado en Ollama. Ejecuta «ollama pull {0}» o elige otro en el botón «IA».": "The model “{0}” is not installed in Ollama. Run “ollama pull {0}” or choose another with the “AI” button.",
   "En los PDF no se detectan las imágenes incrustadas.": "Images embedded in PDFs are not detected.",
   "PDF sin texto: se envían las primeras páginas como imágenes.": "PDF without text: the first pages are sent as images.",
-  "local.ayuda.ollama": "To use Ollama: install it, run “ollama pull qwen2.5:7b” and start it allowing this page's origin (for example OLLAMA_ORIGINS=* ollama serve). Nothing leaves your computer if the address is localhost. The default context is limited, so text is sent in small pieces.",
-  "local.ayuda.lmstudio": "To use LM Studio: load a model, start its local server (Developer tab) and enable CORS. Nothing leaves your computer if the address is localhost.",
-  "local.ayuda.webllm": "WebLLM runs the model inside this browser using your graphics card (WebGPU). The first time it downloads the model (about 2–5 GB) and stores it in the browser cache; after that nothing is sent anywhere. Small models need more review: the code verifies everything they claim.",
   "s.empezar": "Start",
   "s.ejemplo": "See an example",
   "s.enviar": "Send and analyse",
@@ -1376,7 +1361,7 @@ const I18N = {
   "s.j4b": "You download",
   "s.j4s": "Self-evaluation report and improvement plan in Word, with a traceability annex.",
   "s.marcos.nota": "The summaries of the official frameworks are indicative: always check against your agency's current guide.",
-  "s.zl": "<li>Your evidence, your indicators and the results, stored in this browser</li><li>Your AI keys</li><li>All checks, calculations and downloads</li><li>With local AI (WebLLM, Ollama, LM Studio): the AI itself too</li>",
+  "s.zl": "<li>Your evidence, your indicators and the results, stored in this browser</li><li>Your AI keys</li><li>All checks, calculations and downloads</li>",
   "s.zn": "<li>Only with a cloud provider: the passages you decide to analyse, with emails, ID numbers, phone numbers and the names you list masked</li><li>Before the first send you see a sample of what goes out</li>",
   "s.paso1": "Step 1 of 6",
   "s.paso2": "Step 2 of 6",
@@ -1395,7 +1380,7 @@ const I18N = {
   "s.ag.lede": "The 19 agents and their phases. AI agents have an editable instruction; code agents are deterministic.",
   "s.au.lede": "What was called, what was discarded for lacking a verified quote, and who decided each rating.",
   "s.json.aviso": "The JSON includes the text of your evidence: keep it with the same care as the original documents. It does not include AI keys.",
-  "s.nombres.ayuda": "Before text is sent to a cloud provider they are replaced by [PERSONA], as are emails, ID numbers, phone numbers and titles such as “Dr. …”. With local AI nothing is masked because nothing leaves your computer.",
+  "s.nombres.ayuda": "Before text is sent to a cloud provider they are replaced by [PERSONA], as are emails, ID numbers, phone numbers and titles such as “Dr. …”.",
   "f.pie": "Support tool: the AI can make mistakes and a person decides the rating of each criterion. It does not replace your agency's guide. Your data is stored only in this browser.",
   "p.renov": "Accreditation renewal",
   "p.seg": "Monitoring",
@@ -1539,11 +1524,11 @@ const I18N = {
   "Los 19 agentes": "Os 19 agentes",
   "Se agrupan en cinco fases: lectura, diagnóstico, redacción, plan de mejora y revisión. Los que son de código no usan IA. Las instrucciones de los agentes de IA se pueden editar.": "Agrupam-se em cinco fases: leitura, diagnóstico, redação, plano de melhoria e revisão. Os de código não usam IA. As instruções dos agentes de IA podem ser editadas.",
   "Privacidad": "Privacidade",
-  "Todo se guarda solo en este navegador. Con un proveedor en la nube salen los pasajes con los datos personales enmascarados, tras un aviso previo. Con IA local (WebLLM, Ollama o LM Studio en tu equipo) no sale nada.": "Tudo é guardado apenas neste navegador. Com um fornecedor na nuvem saem as passagens com os dados pessoais mascarados, após um aviso prévio. Com IA local (WebLLM, Ollama ou LM Studio no seu computador) não sai nada.",
+  "Todo se guarda solo en este navegador. Con un proveedor en la nube salen los pasajes con los datos personales enmascarados, tras un aviso previo.": "Tudo é guardado apenas neste navegador. Com um fornecedor na nuvem saem as passagens com os dados pessoais mascarados, após um aviso prévio.",
   "Marcos de evaluación": "Referenciais de avaliação",
   "ANECA/ACREDITA, ESG, ARCU-SUR, un marco común iberoamericano propio o uno personalizado que pegues. Los resúmenes son orientativos: contrasta con la guía vigente de tu agencia.": "ANECA/ACREDITA, ESG, ARCU-SUR, um referencial comum ibero-americano próprio ou um personalizado que cole. Os resumos são indicativos: confirme com o guia em vigor da sua agência.",
   "Límites": "Limites",
-  "No sustituye el juicio del comité ni la guía de la agencia, no comprueba el cumplimiento normativo y no lee imágenes ni escaneos sin texto. Los resultados de IA local dependen mucho del tamaño del modelo.": "Não substitui o juízo da comissão nem o guia da agência, não verifica o cumprimento normativo e não lê imagens nem digitalizações sem texto. Os resultados da IA local dependem muito do tamanho do modelo.",
+  "No sustituye el juicio del comité ni la guía de la agencia, no comprueba el cumplimiento normativo y no lee imágenes ni escaneos sin texto.": "Não substitui o juízo da comissão nem o guia da agência, não verifica o cumprimento normativo e não lê imagens nem digitalizações sem texto.",
   "Tienes un proyecto guardado en este navegador.": "Tem um projeto guardado neste navegador.",
   "Continuar": "Continuar",
   "Empezar de cero": "Começar do zero",
@@ -1774,23 +1759,9 @@ const I18N = {
   "Entrada": "Entrada",
   "Salida": "Saída",
   "Aún no hay llamadas.": "Ainda não há chamadas.",
-  "Cargando el modelo…": "A carregar o modelo…",
-  "Dirección del servidor": "Endereço do servidor",
   "Tu clave de API": "A sua chave de API",
-  "Descargar y cargar el modelo": "Descarregar e carregar o modelo",
-  "Probar la conexión": "Testar a ligação",
-  "Conexión correcta: {0} modelo(s) disponibles.": "Ligação correta: {0} modelo(s) disponível(is).",
-  "{0} modelos disponibles; escribe o elige uno.": "{0} modelos disponíveis; escreva ou escolha um.",
-  "Modelo cargado: ya puedes trabajar sin conexión con un servidor.": "Modelo carregado: já pode trabalhar sem ligação a um servidor.",
-  "Este navegador no tiene WebGPU, que WebLLM necesita. Usa Chrome o Edge recientes, o elige Ollama o LM Studio.": "Este navegador não tem WebGPU, de que o WebLLM precisa. Use um Chrome ou Edge recentes, ou escolha Ollama ou LM Studio.",
-  "No se pudo cargar WebLLM: ¿hay conexión?": "Não foi possível carregar o WebLLM: há ligação?",
-  "No se puede conectar con {0} en {1}. ¿Está en marcha y permite este origen (OLLAMA_ORIGINS)? El navegador puede pedirte permiso para acceder a la red local.": "Não é possível ligar a {0} em {1}. Está em execução e permite esta origem (OLLAMA_ORIGINS)? O navegador pode pedir-lhe permissão para aceder à rede local.",
-  "El modelo «{0}» no está instalado en Ollama. Ejecuta «ollama pull {0}» o elige otro en el botón «IA».": "O modelo «{0}» não está instalado no Ollama. Execute «ollama pull {0}» ou escolha outro no botão «IA».",
   "En los PDF no se detectan las imágenes incrustadas.": "Nos PDF não são detetadas as imagens incorporadas.",
   "PDF sin texto: se envían las primeras páginas como imágenes.": "PDF sem texto: as primeiras páginas são enviadas como imagens.",
-  "local.ayuda.ollama": "Para usar o Ollama: instale-o, execute «ollama pull qwen2.5:7b» e inicie-o permitindo a origem desta página (por exemplo OLLAMA_ORIGINS=* ollama serve). Nada sai do seu computador se o endereço for localhost. O contexto por omissão é limitado, por isso o texto é enviado em pedaços pequenos.",
-  "local.ayuda.lmstudio": "Para usar o LM Studio: carregue um modelo, inicie o seu servidor local (separador Developer) e ative o CORS. Nada sai do seu computador se o endereço for localhost.",
-  "local.ayuda.webllm": "O WebLLM executa o modelo dentro deste navegador usando a sua placa gráfica (WebGPU). Na primeira vez descarrega o modelo (cerca de 2–5 GB) e guarda-o na cache do navegador; depois não é enviado nada para lado nenhum. Os modelos pequenos exigem mais revisão: o código verifica tudo o que afirmam.",
   "s.empezar": "Começar",
   "s.ejemplo": "Ver um exemplo",
   "s.enviar": "Enviar e analisar",
@@ -1803,7 +1774,7 @@ const I18N = {
   "s.j4b": "Descarrega",
   "s.j4s": "Relatório de autoavaliação e plano de melhoria em Word, com anexo de rastreabilidade.",
   "s.marcos.nota": "Os resumos dos referenciais oficiais são indicativos: confirme sempre com o guia em vigor da sua agência.",
-  "s.zl": "<li>As suas evidências, os seus indicadores e os resultados, guardados neste navegador</li><li>As suas chaves de IA</li><li>Todas as verificações, os cálculos e os descarregamentos</li><li>Com IA local (WebLLM, Ollama, LM Studio): também a própria IA</li>",
+  "s.zl": "<li>As suas evidências, os seus indicadores e os resultados, guardados neste navegador</li><li>As suas chaves de IA</li><li>Todas as verificações, os cálculos e os descarregamentos</li>",
   "s.zn": "<li>Apenas com um fornecedor na nuvem: as passagens que decidir analisar, com emails, números de identificação, telefones e os nomes que indicar mascarados</li><li>Antes do primeiro envio vê uma amostra do que sai</li>",
   "s.paso1": "Passo 1 de 6",
   "s.paso2": "Passo 2 de 6",
@@ -1822,7 +1793,7 @@ const I18N = {
   "s.ag.lede": "Os 19 agentes e as suas fases. Os agentes de IA têm uma instrução editável; os de código são deterministas.",
   "s.au.lede": "O que foi chamado, o que foi descartado por não ter citação verificada e quem decidiu cada avaliação.",
   "s.json.aviso": "O JSON inclui o texto das suas evidências: guarde-o com os mesmos cuidados que os documentos originais. Não inclui chaves de IA.",
-  "s.nombres.ayuda": "Antes de enviar texto a um fornecedor na nuvem são substituídos por [PERSONA], tal como emails, números de identificação, telefones e tratamentos como «Dr. …». Com IA local nada é mascarado porque nada sai do seu computador.",
+  "s.nombres.ayuda": "Antes de enviar texto a um fornecedor na nuvem são substituídos por [PERSONA], tal como emails, números de identificação, telefones e tratamentos como «Dr. …».",
   "f.pie": "Ferramenta de apoio: a IA pode enganar-se e a avaliação de cada critério é decidida por uma pessoa. Não substitui o guia da sua agência. Os seus dados são guardados apenas neste navegador.",
   "p.renov": "Renovação da acreditação",
   "p.seg": "Acompanhamento",
@@ -1966,11 +1937,11 @@ const I18N = {
   "Los 19 agentes": "Els 19 agents",
   "Se agrupan en cinco fases: lectura, diagnóstico, redacción, plan de mejora y revisión. Los que son de código no usan IA. Las instrucciones de los agentes de IA se pueden editar.": "S'agrupen en cinc fases: lectura, diagnòstic, redacció, pla de millora i revisió. Els de codi no usen IA. Les instruccions dels agents d'IA es poden editar.",
   "Privacidad": "Privadesa",
-  "Todo se guarda solo en este navegador. Con un proveedor en la nube salen los pasajes con los datos personales enmascarados, tras un aviso previo. Con IA local (WebLLM, Ollama o LM Studio en tu equipo) no sale nada.": "Tot es guarda només en este navegador. Amb un proveïdor al núvol, els passatges isen amb les dades personals emmascarades, després d'un avís previ. Amb IA local (WebLLM, Ollama o LM Studio al teu equip) no isa res.",
+  "Todo se guarda solo en este navegador. Con un proveedor en la nube salen los pasajes con los datos personales enmascarados, tras un aviso previo.": "Tot es guarda només en este navegador. Amb un proveïdor al núvol, els passatges isen amb les dades personals emmascarades, després d'un avís previ.",
   "Marcos de evaluación": "Marcs d'avaluació",
   "ANECA/ACREDITA, ESG, ARCU-SUR, un marco común iberoamericano propio o uno personalizado que pegues. Los resúmenes son orientativos: contrasta con la guía vigente de tu agencia.": "ANECA/ACREDITA, ESG, ARCU-SUR, un marc comú iberoamericà propi o un de personalitzat que apegues. Els resums són orientatius: contrasta amb la guia vigent de la teua agència.",
   "Límites": "Límits",
-  "No sustituye el juicio del comité ni la guía de la agencia, no comprueba el cumplimiento normativo y no lee imágenes ni escaneos sin texto. Los resultados de IA local dependen mucho del tamaño del modelo.": "No substitueix el judici del comité ni la guia de l'agència, no comprova el compliment normatiu i no llig imatges ni escanejos sense text. Els resultats de la IA local depenen molt de la mida del model.",
+  "No sustituye el juicio del comité ni la guía de la agencia, no comprueba el cumplimiento normativo y no lee imágenes ni escaneos sin texto.": "No substitueix el judici del comité ni la guia de l'agència, no comprova el compliment normatiu i no llig imatges ni escanejos sense text.",
   "Tienes un proyecto guardado en este navegador.": "Tens un projecte guardat en este navegador.",
   "Continuar": "Continua",
   "Empezar de cero": "Comença de zero",
@@ -2201,23 +2172,9 @@ const I18N = {
   "Entrada": "Entrada",
   "Salida": "Eixida",
   "Aún no hay llamadas.": "Encara no hi ha crides.",
-  "Cargando el modelo…": "Carregant el model…",
-  "Dirección del servidor": "Adreça del servidor",
   "Tu clave de API": "La teua clau d'API",
-  "Descargar y cargar el modelo": "Descarrega i carrega el model",
-  "Probar la conexión": "Prova la connexió",
-  "Conexión correcta: {0} modelo(s) disponibles.": "Connexió correcta: {0} model(s) disponibles.",
-  "{0} modelos disponibles; escribe o elige uno.": "{0} models disponibles; escriu o tria'n un.",
-  "Modelo cargado: ya puedes trabajar sin conexión con un servidor.": "Model carregat: ja pots treballar sense connexió amb un servidor.",
-  "Este navegador no tiene WebGPU, que WebLLM necesita. Usa Chrome o Edge recientes, o elige Ollama o LM Studio.": "Este navegador no té WebGPU, que WebLLM necessita. Usa Chrome o Edge recents, o tria Ollama o LM Studio.",
-  "No se pudo cargar WebLLM: ¿hay conexión?": "No s'ha pogut carregar WebLLM: hi ha connexió?",
-  "No se puede conectar con {0} en {1}. ¿Está en marcha y permite este origen (OLLAMA_ORIGINS)? El navegador puede pedirte permiso para acceder a la red local.": "No es pot connectar amb {0} en {1}. Està en marxa i permet este origen (OLLAMA_ORIGINS)? El navegador pot demanar-te permís per a accedir a la xarxa local.",
-  "El modelo «{0}» no está instalado en Ollama. Ejecuta «ollama pull {0}» o elige otro en el botón «IA».": "El model «{0}» no està instal·lat a Ollama. Executa «ollama pull {0}» o tria'n un altre amb el botó «IA».",
   "En los PDF no se detectan las imágenes incrustadas.": "En els PDF no es detecten les imatges incrustades.",
   "PDF sin texto: se envían las primeras páginas como imágenes.": "PDF sense text: s'envien les primeres pàgines com a imatges.",
-  "local.ayuda.ollama": "Per a usar Ollama: instal·la'l, executa «ollama pull qwen2.5:7b» i inicia'l permetent l'origen d'esta pàgina (per exemple OLLAMA_ORIGINS=* ollama serve). No isa res del teu ordinador si l'adreça és localhost. El context per defecte és limitat, per això el text s'envia en trossos xicotets.",
-  "local.ayuda.lmstudio": "Per a usar LM Studio: carrega un model, inicia el seu servidor local (pestanya Developer) i activa CORS. No isa res del teu ordinador si l'adreça és localhost.",
-  "local.ayuda.webllm": "WebLLM executa el model dins d'este navegador amb la teua targeta gràfica (WebGPU). La primera vegada descarrega el model (uns 2–5 GB) i el guarda en la memòria cau del navegador; després no s'envia res a cap lloc. Els models xicotets necessiten més revisió: el codi verifica tot el que afirmen.",
   "s.empezar": "Comença",
   "s.ejemplo": "Mira un exemple",
   "s.enviar": "Envia i analitza",
@@ -2230,7 +2187,7 @@ const I18N = {
   "s.j4b": "Descarregues",
   "s.j4s": "Autoinforme i pla de millora en Word, amb annex de traçabilitat.",
   "s.marcos.nota": "Els resums dels marcs oficials són orientatius: contrasta sempre amb la guia vigent de la teua agència.",
-  "s.zl": "<li>Les teues evidències, els teus indicadors i els resultats, guardats en este navegador</li><li>Les teues claus d'IA</li><li>Totes les comprovacions, els càlculs i les descàrregues</li><li>Amb IA local (WebLLM, Ollama, LM Studio): també la mateixa IA</li>",
+  "s.zl": "<li>Les teues evidències, els teus indicadors i els resultats, guardats en este navegador</li><li>Les teues claus d'IA</li><li>Totes les comprovacions, els càlculs i les descàrregues</li>",
   "s.zn": "<li>Només amb un proveïdor al núvol: els passatges que decidisques analitzar, amb correus, DNI, telèfons i els noms que indiques emmascarats</li><li>Abans del primer enviament veus una mostra del que isa</li>",
   "s.paso1": "Pas 1 de 6",
   "s.paso2": "Pas 2 de 6",
@@ -2249,7 +2206,7 @@ const I18N = {
   "s.ag.lede": "Els 19 agents i les seues fases. Els agents d'IA tenen una instrucció editable; els de codi són deterministes.",
   "s.au.lede": "Què s'ha cridat, què s'ha descartat per no tindre cita verificada i qui va decidir cada valoració.",
   "s.json.aviso": "El JSON inclou el text de les teues evidències: guarda'l amb les mateixes precaucions que els documents originals. No inclou claus d'IA.",
-  "s.nombres.ayuda": "Abans d'enviar text a un proveïdor al núvol se substituïxen per [PERSONA], igual que els correus, DNI/NIE, telèfons i tractaments com «Dr. …». Amb IA local no s'emmascara res perquè no isa de l'equip.",
+  "s.nombres.ayuda": "Abans d'enviar text a un proveïdor al núvol se substituïxen per [PERSONA], igual que els correus, DNI/NIE, telèfons i tractaments com «Dr. …».",
   "f.pie": "Eina de suport: la IA pot equivocar-se i una persona decidix la valoració de cada criteri. No substituïx la guia de la teua agència. Les teues dades es guarden només en este navegador.",
   "p.renov": "Renovació de l'acreditació",
   "p.seg": "Seguiment",
@@ -2434,11 +2391,11 @@ const I18N = {
   "Los 19 agentes": "Os 19 axentes",
   "Se agrupan en cinco fases: lectura, diagnóstico, redacción, plan de mejora y revisión. Los que son de código no usan IA. Las instrucciones de los agentes de IA se pueden editar.": "Agrúpanse en cinco fases: lectura, diagnóstico, redacción, plan de mellora e revisión. Os de código non usan IA. As instrucións dos axentes de IA pódense editar.",
   "Privacidad": "Privacidade",
-  "Todo se guarda solo en este navegador. Con un proveedor en la nube salen los pasajes con los datos personales enmascarados, tras un aviso previo. Con IA local (WebLLM, Ollama o LM Studio en tu equipo) no sale nada.": "Todo se garda só neste navegador. Cun provedor na nube saen as pasaxes cos datos persoais mascarados, tras un aviso previo. Con IA local (WebLLM, Ollama ou LM Studio no teu equipo) non sae nada.",
+  "Todo se guarda solo en este navegador. Con un proveedor en la nube salen los pasajes con los datos personales enmascarados, tras un aviso previo.": "Todo se garda só neste navegador. Cun provedor na nube saen as pasaxes cos datos persoais mascarados, tras un aviso previo.",
   "Marcos de evaluación": "Marcos de avaliación",
   "ANECA/ACREDITA, ESG, ARCU-SUR, un marco común iberoamericano propio o uno personalizado que pegues. Los resúmenes son orientativos: contrasta con la guía vigente de tu agencia.": "ANECA/ACREDITA, ESG, ARCU-SUR, un marco común iberoamericano propio ou un personalizado que pegues. Os resumos son orientativos: contrasta coa guía vixente da túa axencia.",
   "Límites": "Límites",
-  "No sustituye el juicio del comité ni la guía de la agencia, no comprueba el cumplimiento normativo y no lee imágenes ni escaneos sin texto. Los resultados de IA local dependen mucho del tamaño del modelo.": "Non substitúe o xuízo do comité nin a guía da axencia, non comproba o cumprimento normativo e non le imaxes nin dixitalizacións sen texto. Os resultados da IA local dependen moito do tamaño do modelo.",
+  "No sustituye el juicio del comité ni la guía de la agencia, no comprueba el cumplimiento normativo y no lee imágenes ni escaneos sin texto.": "Non substitúe o xuízo do comité nin a guía da axencia, non comproba o cumprimento normativo e non le imaxes nin dixitalizacións sen texto.",
   "Tienes un proyecto guardado en este navegador.": "Tes un proxecto gardado neste navegador.",
   "Continuar": "Continuar",
   "Empezar de cero": "Empezar de cero",
@@ -2669,23 +2626,9 @@ const I18N = {
   "Entrada": "Entrada",
   "Salida": "Saída",
   "Aún no hay llamadas.": "Aínda non hai chamadas.",
-  "Cargando el modelo…": "Cargando o modelo…",
-  "Dirección del servidor": "Enderezo do servidor",
   "Tu clave de API": "A túa clave de API",
-  "Descargar y cargar el modelo": "Descargar e cargar o modelo",
-  "Probar la conexión": "Probar a conexión",
-  "Conexión correcta: {0} modelo(s) disponibles.": "Conexión correcta: {0} modelo(s) dispoñible(s).",
-  "{0} modelos disponibles; escribe o elige uno.": "{0} modelos dispoñibles; escribe ou elixe un.",
-  "Modelo cargado: ya puedes trabajar sin conexión con un servidor.": "Modelo cargado: xa podes traballar sen conexión cun servidor.",
-  "Este navegador no tiene WebGPU, que WebLLM necesita. Usa Chrome o Edge recientes, o elige Ollama o LM Studio.": "Este navegador non ten WebGPU, que WebLLM necesita. Usa Chrome ou Edge recentes, ou escolle Ollama ou LM Studio.",
-  "No se pudo cargar WebLLM: ¿hay conexión?": "Non se puido cargar WebLLM: hai conexión?",
-  "No se puede conectar con {0} en {1}. ¿Está en marcha y permite este origen (OLLAMA_ORIGINS)? El navegador puede pedirte permiso para acceder a la red local.": "Non se pode conectar con {0} en {1}. Está en marcha e permite esta orixe (OLLAMA_ORIGINS)? O navegador pode pedirche permiso para acceder á rede local.",
-  "El modelo «{0}» no está instalado en Ollama. Ejecuta «ollama pull {0}» o elige otro en el botón «IA».": "O modelo «{0}» non está instalado en Ollama. Executa «ollama pull {0}» ou escolle outro co botón «IA».",
   "En los PDF no se detectan las imágenes incrustadas.": "Nos PDF non se detectan as imaxes incrustadas.",
   "PDF sin texto: se envían las primeras páginas como imágenes.": "PDF sen texto: envíanse as primeiras páxinas como imaxes.",
-  "local.ayuda.ollama": "Para usar Ollama: instálao, executa «ollama pull qwen2.5:7b» e iníciao permitindo a orixe desta páxina (por exemplo OLLAMA_ORIGINS=* ollama serve). Non sae nada do teu ordenador se o enderezo é localhost. O contexto por defecto é limitado, por iso o texto envíase en anacos pequenos.",
-  "local.ayuda.lmstudio": "Para usar LM Studio: carga un modelo, inicia o seu servidor local (lapela Developer) e activa CORS. Non sae nada do teu ordenador se o enderezo é localhost.",
-  "local.ayuda.webllm": "WebLLM executa o modelo dentro deste navegador coa túa tarxeta gráfica (WebGPU). A primeira vez descarga o modelo (uns 2–5 GB) e gárdao na caché do navegador; despois non se envía nada a ningures. Os modelos pequenos necesitan máis revisión: o código verifica todo o que afirman.",
   "s.empezar": "Comezar",
   "s.ejemplo": "Ver un exemplo",
   "s.enviar": "Enviar e analizar",
@@ -2698,7 +2641,7 @@ const I18N = {
   "s.j4b": "Descargas",
   "s.j4s": "Autoinforme e plan de mellora en Word, con anexo de trazabilidade.",
   "s.marcos.nota": "Os resumos dos marcos oficiais son orientativos: contrasta sempre coa guía vixente da túa axencia.",
-  "s.zl": "<li>As túas evidencias, os teus indicadores e os resultados, gardados neste navegador</li><li>As túas claves de IA</li><li>Todas as comprobacións, os cálculos e as descargas</li><li>Con IA local (WebLLM, Ollama, LM Studio): tamén a propia IA</li>",
+  "s.zl": "<li>As túas evidencias, os teus indicadores e os resultados, gardados neste navegador</li><li>As túas claves de IA</li><li>Todas as comprobacións, os cálculos e as descargas</li>",
   "s.zn": "<li>Só cun provedor na nube: as pasaxes que decidas analizar, con correos, DNI, teléfonos e os nomes que indiques mascarados</li><li>Antes do primeiro envío ves unha mostra do que sae</li>",
   "s.paso1": "Paso 1 de 6",
   "s.paso2": "Paso 2 de 6",
@@ -2717,7 +2660,7 @@ const I18N = {
   "s.ag.lede": "Os 19 axentes e as súas fases. Os axentes de IA teñen unha instrución editable; os de código son deterministas.",
   "s.au.lede": "Que se chamou, que se descartou por non ter cita verificada e quen decidiu cada valoración.",
   "s.json.aviso": "O JSON inclúe o texto das túas evidencias: gárdao coas mesmas precaucións que os documentos orixinais. Non inclúe claves de IA.",
-  "s.nombres.ayuda": "Antes de enviar texto a un provedor na nube substitúense por [PERSONA], como os correos, DNI/NIE, teléfonos e tratamentos como «Dr. …». Con IA local non se mascara nada porque non sae do equipo.",
+  "s.nombres.ayuda": "Antes de enviar texto a un provedor na nube substitúense por [PERSONA], como os correos, DNI/NIE, teléfonos e tratamentos como «Dr. …».",
   "f.pie": "Ferramenta de apoio: a IA pode equivocarse e unha persoa decide a valoración de cada criterio. Non substitúe a guía da túa axencia. Os teus datos gárdanse só neste navegador.",
   "p.renov": "Renovación da acreditación",
   "p.seg": "Seguimento",
@@ -2902,11 +2845,11 @@ const I18N = {
   "Los 19 agentes": "19 agenteak",
   "Se agrupan en cinco fases: lectura, diagnóstico, redacción, plan de mejora y revisión. Los que son de código no usan IA. Las instrucciones de los agentes de IA se pueden editar.": "Bost fasetan multzokatzen dira: irakurketa, diagnostikoa, idazketa, hobekuntza-plana eta berrikuspena. Kodezkoek ez dute IArik erabiltzen. IA agenteen jarraibideak editatu daitezke.",
   "Privacidad": "Pribatutasuna",
-  "Todo se guarda solo en este navegador. Con un proveedor en la nube salen los pasajes con los datos personales enmascarados, tras un aviso previo. Con IA local (WebLLM, Ollama o LM Studio en tu equipo) no sale nada.": "Dena nabigatzaile honetan bakarrik gordetzen da. Hodeiko hornitzaile batekin, pasarteak datu pertsonalak maskaratuta ateratzen dira, aurretiazko ohar baten ondoren. IA lokalarekin (WebLLM, Ollama edo LM Studio zure ekipoan) ez da ezer ateratzen.",
+  "Todo se guarda solo en este navegador. Con un proveedor en la nube salen los pasajes con los datos personales enmascarados, tras un aviso previo.": "Dena nabigatzaile honetan bakarrik gordetzen da. Hodeiko hornitzaile batekin, pasarteak datu pertsonalak maskaratuta ateratzen dira, aurretiazko ohar baten ondoren.",
   "Marcos de evaluación": "Ebaluazio-esparruak",
   "ANECA/ACREDITA, ESG, ARCU-SUR, un marco común iberoamericano propio o uno personalizado que pegues. Los resúmenes son orientativos: contrasta con la guía vigente de tu agencia.": "ANECA/ACREDITA, ESG, ARCU-SUR, Ibero-Amerikako esparru komun propioa edo zuk txertatzen duzun pertsonalizatu bat. Laburpenak orientagarriak dira: egiaztatu zure agentziaren gida indardunarekin.",
   "Límites": "Mugak",
-  "No sustituye el juicio del comité ni la guía de la agencia, no comprueba el cumplimiento normativo y no lee imágenes ni escaneos sin texto. Los resultados de IA local dependen mucho del tamaño del modelo.": "Ez ditu batzordearen iritzia ez agentziaren gida ordezkatzen, ez du araudi-betetzea egiaztatzen eta ez ditu testurik gabeko irudiak edo eskaneatzeak irakurtzen. IA lokalaren emaitzak asko dependitzen dira ereduaren tamainaren arabera.",
+  "No sustituye el juicio del comité ni la guía de la agencia, no comprueba el cumplimiento normativo y no lee imágenes ni escaneos sin texto.": "Ez ditu batzordearen iritzia ez agentziaren gida ordezkatzen, ez du araudi-betetzea egiaztatzen eta ez ditu testurik gabeko irudiak edo eskaneatzeak irakurtzen.",
   "Tienes un proyecto guardado en este navegador.": "Proiektu bat duzu gordeta nabigatzaile honetan.",
   "Continuar": "Jarraitu",
   "Empezar de cero": "Hasi zerotik",
@@ -3137,23 +3080,9 @@ const I18N = {
   "Entrada": "Sarrera",
   "Salida": "Irteera",
   "Aún no hay llamadas.": "Oraindik ez dago deirik.",
-  "Cargando el modelo…": "Eredua kargatzen…",
-  "Dirección del servidor": "Zerbitzariaren helbidea",
   "Tu clave de API": "Zure API gakoa",
-  "Descargar y cargar el modelo": "Deskargatu eta kargatu eredua",
-  "Probar la conexión": "Probatu konexioa",
-  "Conexión correcta: {0} modelo(s) disponibles.": "Konexioa zuzena: {0} eredu eskuragarri.",
-  "{0} modelos disponibles; escribe o elige uno.": "{0} eredu eskuragarri; idatzi edo aukeratu bat.",
-  "Modelo cargado: ya puedes trabajar sin conexión con un servidor.": "Eredua kargatuta: zerbitzari batekin konexiorik gabe lan egin dezakezu.",
-  "Este navegador no tiene WebGPU, que WebLLM necesita. Usa Chrome o Edge recientes, o elige Ollama o LM Studio.": "Nabigatzaile honek ez du WebGPU, WebLLMk behar duena. Erabili Chrome edo Edge berriak, edo aukeratu Ollama edo LM Studio.",
-  "No se pudo cargar WebLLM: ¿hay conexión?": "Ezin izan da WebLLM kargatu: konexiorik badago?",
-  "No se puede conectar con {0} en {1}. ¿Está en marcha y permite este origen (OLLAMA_ORIGINS)? El navegador puede pedirte permiso para acceder a la red local.": "Ezin da {0}(r)ekin konektatu {1} helbidean. Martxan dago eta jatorri hau onartzen du (OLLAMA_ORIGINS)? Nabigatzaileak sare lokalerako baimena eska diezazuke.",
-  "El modelo «{0}» no está instalado en Ollama. Ejecuta «ollama pull {0}» o elige otro en el botón «IA».": "«{0}» eredua ez dago Ollaman instalatuta. Exekutatu «ollama pull {0}» edo aukeratu beste bat «IA» botoiarekin.",
   "En los PDF no se detectan las imágenes incrustadas.": "PDFetan ez dira txertatutako irudiak detektatzen.",
   "PDF sin texto: se envían las primeras páginas como imágenes.": "Testurik gabeko PDFa: lehen orrialdeak irudi gisa bidaltzen dira.",
-  "local.ayuda.ollama": "Ollama erabiltzeko: instalatu, exekutatu «ollama pull qwen2.5:7b» eta abiarazi orri honen jatorria onartuz (adibidez OLLAMA_ORIGINS=* ollama serve). Helbidea localhost bada, ez da ezer ateratzen zure ordenagailutik. Lehenetsitako testuingurua mugatua da, beraz testua zati txikitan bidaltzen da.",
-  "local.ayuda.lmstudio": "LM Studio erabiltzeko: kargatu eredu bat, abiarazi bere zerbitzari lokala (Developer fitxa) eta gaitu CORS. Helbidea localhost bada, ez da ezer ateratzen zure ordenagailutik.",
-  "local.ayuda.webllm": "WebLLMk eredua nabigatzaile honen barruan exekutatzen du zure txartel grafikoarekin (WebGPU). Lehen aldian eredua deskargatzen du (2–5 GB inguru) eta nabigatzailearen cachean gordetzen du; ondoren ez da ezer inora bidaltzen. Eredu txikiek berrikuspen gehiago behar dute: kodeak egiaztatzen du haiek baieztatzen duten guztia.",
   "s.empezar": "Hasi",
   "s.ejemplo": "Ikusi adibide bat",
   "s.enviar": "Bidali eta aztertu",
@@ -3166,7 +3095,7 @@ const I18N = {
   "s.j4b": "Deskargatzen duzu",
   "s.j4s": "Autotxostena eta hobekuntza-plana Word formatuan, aztarnagarritasun-eranskinarekin.",
   "s.marcos.nota": "Esparru ofizialen laburpenak orientagarriak dira: egiaztatu beti zure agentziaren gida indardunarekin.",
-  "s.zl": "<li>Zure ebidentziak, adierazleak eta emaitzak, nabigatzaile honetan gordeta</li><li>Zure IA gakoak</li><li>Egiaztapen, kalkulu eta deskarga guztiak</li><li>IA lokalarekin (WebLLM, Ollama, LM Studio): IA bera ere bai</li>",
+  "s.zl": "<li>Zure ebidentziak, adierazleak eta emaitzak, nabigatzaile honetan gordeta</li><li>Zure IA gakoak</li><li>Egiaztapen, kalkulu eta deskarga guztiak</li>",
   "s.zn": "<li>Hodeiko hornitzaile batekin soilik: aztertzea erabakitzen dituzun pasarteak, posta elektronikoak, NANak, telefonoak eta adierazten dituzun izenak maskaratuta</li><li>Lehen bidalketa baino lehen ateratzen denaren lagin bat ikusten duzu</li>",
   "s.paso1": "1. urratsa, 6tik",
   "s.paso2": "2. urratsa, 6tik",
@@ -3185,7 +3114,7 @@ const I18N = {
   "s.ag.lede": "19 agenteak eta haien faseak. IA agenteek jarraibide editagarria dute; kodezkoak deterministak dira.",
   "s.au.lede": "Zer deitu den, zer baztertu den aipu egiaztaturik ez zuelako eta nork erabaki zuen balorazio bakoitza.",
   "s.json.aviso": "JSONak zure ebidentzien testua barne hartzen du: gorde jatorrizko dokumentuekin bezalako zaintzarekin. Ez ditu IA gakorik barne hartzen.",
-  "s.nombres.ayuda": "Testua hodeiko hornitzaile batera bidali aurretik [PERSONA] bidez ordezkatzen dira, baita posta elektronikoak, NAN/AIZak, telefonoak eta «Dr. …» bezalako tratamenduak ere. IA lokalarekin ez da ezer maskaratzen, ekipotik ez baita ateratzen.",
+  "s.nombres.ayuda": "Testua hodeiko hornitzaile batera bidali aurretik [PERSONA] bidez ordezkatzen dira, baita posta elektronikoak, NAN/AIZak, telefonoak eta «Dr. …» bezalako tratamenduak ere.",
   "f.pie": "Laguntza-tresna: IA oker daiteke eta pertsona batek erabakitzen du irizpide bakoitzaren balorazioa. Ez du zure agentziaren gida ordezkatzen. Zure datuak nabigatzaile honetan bakarrik gordetzen dira.",
   "p.renov": "Akreditazioaren berritzea",
   "p.seg": "Jarraipena",
@@ -4393,13 +4322,13 @@ function pasajesDe(ev) {
 const todosPasajes = () => (S.evid || []).flatMap(pasajesDe);
 const pasajePorId = id => todosPasajes().find(p => p.id === id);
 const catEs = id => (CATS.find(c => c.id === id) || {n: {es: id}}).n.es;
-/* datos personales: se enmascaran salvo que la IA sea local (nada sale del equipo) */
+/* datos personales: se enmascaran antes de enviarlos al proveedor */
 function scrubTodo(txt) {
   const r = scrub(txt, S.nombres || ''); let tx = r.t, n = r.n;
   tx = tx.replace(/\b(?:Dr\.?|Dra\.?|D\.|Dña\.?|Sr\.?|Sra\.?|Prof\.?|Profa\.?|Mr\.?|Mrs\.?|Ms\.?)\s+(?:[A-ZÁÉÍÓÚÑ][\p{L}'’-]+\s*){1,4}/gu, () => { n++; return '[PERSONA] '; });
   return {t: tx, n};
 }
-const pTxt = p => (typeof esLocalActivo === 'function' && esLocalActivo()) ? p.texto : scrubTodo(p.texto).t;
+const pTxt = p => scrubTodo(p.texto).t;
 const bloquePasajes = ps => ps.map(p => `[${p.id}] (${catEs(p.cat)} · ${p.nombre})\n${pTxt(p)}`).join('\n\n');
 function recupera(crit, bud) {
   const kws = (crit.kw || []).map(norm).filter(Boolean);
@@ -4608,97 +4537,11 @@ function validaPerfilJSON(j) {
   return {nombre: String(j.nombre || 'Perfil importado').slice(0, 120), fuente: String(j.fuente || ''), dims, temas: j.temas && typeof j.temas === 'object' ? j.temas : mapeaTemas(dims)};
 }
 
-/* ══ IA local: Ollama, LM Studio y WebLLM (en el propio navegador). Nada sale del equipo si el servidor es localhost. ══
-   Se añaden como proveedores a los de Forja (OpenAI, Gemini, Claude) sobreescribiendo llm(), listaModelos(), pideClave() y cargaIA(). */
-const LOCAL = {ollama: {url: 'http://localhost:11434', ctx: 8192, bud: 9000, max: 1800}, lmstudio: {url: 'http://localhost:1234', ctx: 4096, bud: 6000, max: 1500}, webllm: {url: '', ctx: 4096, bud: 4200, max: 1000}};
-const WEBMODELOS = ['Qwen2.5-3B-Instruct-q4f16_1-MLC', 'Llama-3.2-3B-Instruct-q4f16_1-MLC', 'Phi-3.5-mini-instruct-q4f16_1-MLC', 'Qwen2.5-7B-Instruct-q4f16_1-MLC', 'gemma-2-2b-it-q4f16_1-MLC'];
-const WEBLLM_URL = 'https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.85/+esm';
-Object.assign(PROV, {
-  ollama: {n: 'Ollama (local)', m: 'qwen2.5:7b', k: APP + '_url_ollama'},
-  lmstudio: {n: 'LM Studio (local)', m: 'local-model', k: APP + '_url_lmstudio'},
-  webllm: {n: 'WebLLM (navegador)', m: WEBMODELOS[0], k: APP + '_key_webllm'}
-});
-Object.assign(KPH, {ollama: LOCAL.ollama.url, lmstudio: LOCAL.lmstudio.url, webllm: ''});
-const esLocalPv = p => p in LOCAL;
-const urlLocal = pv => (localStorage.getItem(PROV[pv].k) || LOCAL[pv].url).trim().replace(/\/+$/, '');
-/* ¿la IA activa corre en este equipo? (WebLLM, o un servidor en localhost). Si no, hay que enmascarar y avisar antes de enviar. */
-function esLocalActivo() {
-  const pv = getProv(); if (pv === 'webllm') return true;
-  if (pv === 'ollama' || pv === 'lmstudio') { try { return ['localhost', '127.0.0.1', '[::1]', '::1'].includes(new URL(urlLocal(pv)).hostname); } catch { return false; } }
-  return false;
-}
-const presupuesto = () => { const pv = getProv(); return LOCAL[pv] ? {bud: LOCAL[pv].bud, max: LOCAL[pv].max, local: true} : {bud: 24000, max: 3500, local: false}; };
-const soloTexto = msgs => msgs.map(m => ({role: m.role, content: typeof m.content === 'string' ? m.content : m.content.filter(p => p.t === 'text').map(p => p.v).join('\n')}));
-const errLocal = (pv, e) => new Error(t('No se puede conectar con {0} en {1}. ¿Está en marcha y permite este origen (OLLAMA_ORIGINS)? El navegador puede pedirte permiso para acceder a la red local.', PROV[pv].n, urlLocal(pv)));
-async function fetchLocal(pv, path, opt) { try { return await fetch(urlLocal(pv) + path, opt); } catch (e) { throw errLocal(pv, e); } }
-async function llmOllama(msgs, {json = false, max = 1800} = {}) {
-  const mod = getMod('ollama'), body = {model: mod, messages: soloTexto(msgs), stream: false, options: {temperature: 0.3, num_ctx: LOCAL.ollama.ctx, num_predict: max}}; if (json) body.format = 'json';
-  const r = await fetchLocal('ollama', '/api/chat', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)}), tx = await r.text();
-  if (!r.ok) throw r.status === 404 ? new Error(t('El modelo «{0}» no está instalado en Ollama. Ejecuta «ollama pull {0}» o elige otro en el botón «IA».', mod)) : new Error(`Ollama ${r.status}: ${tx.slice(0, 160)}`);
-  return (JSON.parse(tx).message || {}).content || '';
-}
-async function llmLMS(msgs, {max = 1500} = {}) {
-  const mod = getMod('lmstudio'), r = await fetchLocal('lmstudio', '/v1/chat/completions', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({model: mod, messages: soloTexto(msgs), temperature: 0.3, max_tokens: max, stream: false})}), tx = await r.text();
-  if (!r.ok) throw new Error(`LM Studio ${r.status}: ${tx.slice(0, 160)}`);
-  return (((JSON.parse(tx).choices || [])[0] || {}).message || {}).content || '';
-}
-let _web = null, _webMod = '';
-const estadoIA = m => { if ($('iaEstado')) $('iaEstado').textContent = m; };
-async function cargaWebLLM(mod, onProg) {
-  if (_web && _webMod === mod) return _web;
-  if (!navigator.gpu) throw new Error(t('Este navegador no tiene WebGPU, que WebLLM necesita. Usa Chrome o Edge recientes, o elige Ollama o LM Studio.'));
-  let lib; try { lib = await import(WEBLLM_URL); } catch { throw new Error(t('No se pudo cargar WebLLM: ¿hay conexión?')); }
-  _web = await lib.CreateMLCEngine(mod, {initProgressCallback: p => onProg && onProg(p)}); _webMod = mod; return _web;
-}
-async function llmWeb(msgs, {json = false, max = 1000} = {}) {
-  const eng = await cargaWebLLM(getMod('webllm'), p => estadoIA(`${t('Cargando el modelo…')} ${Math.round((p.progress || 0) * 100)} %`));
-  const r = await eng.chat.completions.create({messages: soloTexto(msgs), temperature: 0.3, max_tokens: max, ...(json ? {response_format: {type: 'json_object'}} : {})});
-  return (((r.choices || [])[0] || {}).message || {}).content || '';
-}
-const _llmNube = llm;
-llm = async function (msgs, o = {}) {
-  const pv = getProv();
-  if (pv === 'ollama') return llmOllama(msgs, o);
-  if (pv === 'lmstudio') return llmLMS(msgs, o);
-  if (pv === 'webllm') return llmWeb(msgs, o);
-  return _llmNube(msgs, o);
-};
-const _listaNube = listaModelos;
-listaModelos = async function (pv = getProv()) {
-  if (pv === 'ollama') { const r = await fetchLocal(pv, '/api/tags'); if (!r.ok) throw new Error('Ollama ' + r.status); return ((await r.json()).models || []).map(m => m.name).sort(); }
-  if (pv === 'lmstudio') { const r = await fetchLocal(pv, '/v1/models'); if (!r.ok) throw new Error('LM Studio ' + r.status); return ((await r.json()).data || []).map(m => m.id).sort(); }
-  if (pv === 'webllm') return WEBMODELOS;
-  return _listaNube(pv);
-};
+/* presupuesto de texto por llamada a la IA (proveedores en la nube) */
+const presupuesto = () => ({bud: 24000, max: 3500});
+/* el ejemplo no necesita clave */
 const _pideClave = pideClave;
-pideClave = function () { return (S && S.esEjemplo) || esLocalPv(getProv()) || _pideClave(); };
-const _cargaIA = cargaIA;
-cargaIA = function () {
-  _cargaIA(); const pv = getProv(), loc = esLocalPv(pv);
-  $('lblKey').textContent = loc ? t('Dirección del servidor') : t('Tu clave de API');
-  $('fKey').style.display = pv === 'webllm' ? 'none' : '';
-  if (loc && pv !== 'webllm') $('apiKey').type = 'text';
-  $('btnModelos').style.display = pv === 'webllm' ? 'none' : '';
-  $('fLocal').style.display = loc ? '' : 'none';
-  $('btnCargaLocal').textContent = pv === 'webllm' ? t('Descargar y cargar el modelo') : t('Probar la conexión');
-  $('iaEstado').textContent = loc ? t('local.ayuda.' + pv) : t('f.ia.ayuda');
-  if (pv === 'webllm') $('modelos').innerHTML = WEBMODELOS.map(m => `<option value="${esc(m)}">`).join('');
-  if (loc) $('apiKey').placeholder = LOCAL[pv].url;
-  $('selProv').dataset.local = loc ? '1' : '';
-};
-const _iniciaUI = iniciaUI;
-iniciaUI = function () {
-  _iniciaUI();
-  if (!$('btnIA')) return;
-  $('btnModelos').onclick = async () => { const pv = getProv(); estadoIA('…'); try { const l = await listaModelos(pv); localStorage.setItem(APP + '_models_' + pv, JSON.stringify(l)); $('modelos').innerHTML = l.map(m => `<option value="${esc(m)}">`).join(''); estadoIA(t('{0} modelos disponibles; escribe o elige uno.', l.length)); } catch (e) { estadoIA(e.message); } };
-  $('btnCargaLocal').onclick = async () => {
-    const pv = getProv(); estadoIA('…');
-    try {
-      if (pv === 'webllm') { await cargaWebLLM(getMod('webllm'), p => estadoIA(`${t('Cargando el modelo…')} ${Math.round((p.progress || 0) * 100)} %`)); estadoIA(t('Modelo cargado: ya puedes trabajar sin conexión con un servidor.')); }
-      else { const l = await listaModelos(pv); estadoIA(t('Conexión correcta: {0} modelo(s) disponibles.', l.length)); if (l.length && !l.includes(getMod(pv))) { $('modelo').value = l[0]; localStorage.setItem(APP + '_model_' + pv, l[0]); } }
-    } catch (e) { estadoIA(e.message); }
-  };
-};
+pideClave = function () { return (S && S.esEjemplo) || _pideClave(); };
 
 /* ══ AcreditIA · interfaz y orquestación de los agentes ══ */
 const STEPS = ['Inicio', 'Título y marco', 'Evidencias', 'Indicadores', 'Diagnóstico', 'Informe', 'Plan de mejora'];
@@ -4720,9 +4563,9 @@ const GLOS = [
   ['Cifras e indicadores', 'Los valores, variaciones, tendencias y cumplimiento de objetivos los calcula el código a partir de tu tabla. La IA no hace cuentas.'],
   ['Reglas del código sobre la valoración', 'Sin evidencia verificada no hay propuesta. Una A exige al menos dos evidencias verificadas a favor. Una debilidad grave verificada limita la propuesta a C. Tú puedes cambiarla siempre, y queda registrado.'],
   ['Los 19 agentes', 'Se agrupan en cinco fases: lectura, diagnóstico, redacción, plan de mejora y revisión. Los que son de código no usan IA. Las instrucciones de los agentes de IA se pueden editar.'],
-  ['Privacidad', 'Todo se guarda solo en este navegador. Con un proveedor en la nube salen los pasajes con los datos personales enmascarados, tras un aviso previo. Con IA local (WebLLM, Ollama o LM Studio en tu equipo) no sale nada.'],
+  ['Privacidad', 'Todo se guarda solo en este navegador. Con un proveedor en la nube salen los pasajes con los datos personales enmascarados, tras un aviso previo.'],
   ['Marcos de evaluación', 'ANECA/ACREDITA, ESG, ARCU-SUR, un marco común iberoamericano propio o uno personalizado que pegues. Los resúmenes son orientativos: contrasta con la guía vigente de tu agencia.'],
-  ['Límites', 'No sustituye el juicio del comité ni la guía de la agencia, no comprueba el cumplimiento normativo y no lee imágenes ni escaneos sin texto. Los resultados de IA local dependen mucho del tamaño del modelo.']
+  ['Límites', 'No sustituye el juicio del comité ni la guía de la agencia, no comprueba el cumplimiento normativo y no lee imágenes ni escaneos sin texto.']
   ,['Cargar los criterios de tu agencia', 'Sube la guía de tu agencia (Word, PDF o texto) y AcreditIA detecta por la estructura sus dimensiones y criterios. Después puedes completarlos con IA (cada criterio debe traer una cita literal que el código comprueba), corregirlos a mano, guardarlos como marco y exportarlos para compartirlos con otras personas o universidades.']
 ];
 const nEs = x => (x && typeof x === 'object') ? x.es : String(x ?? '');
@@ -4815,8 +4658,8 @@ $('btnDetectaIA').onclick = async () => {
   PERF.texto = tx; if (!pideClave()) return; corre = true; setBusy(true);
   try {
     const P = presupuesto(), chunks = []; let cur = ''; pasajesDe({id: 'G1', cat: 'seg', nombre: 'guía', texto: tx}).forEach(ps => { if (cur && (cur + ps.texto).length > P.bud) { chunks.push(cur); cur = ''; } cur += (cur ? '\n\n' : '') + ps.texto; }); if (cur) chunks.push(cur);
-    const use = chunks.slice(0, 12), envio = c => esLocalActivo() ? c : scrubTodo(c).t; let nuevos = 0;
-    if (!esLocalActivo() && !ENVIO_OK && !(await pideEnvio(envio(use[0]), scrubTodo(use[0]).n))) throw new Error(t('Envío cancelado.'));
+    const use = chunks.slice(0, 12), envio = c => scrubTodo(c).t; let nuevos = 0;
+    if (!ENVIO_OK && !(await pideEnvio(envio(use[0]), scrubTodo(use[0]).n))) throw new Error(t('Envío cancelado.'));
     for (let i = 0; i < use.length; i++) {
       $('perfilRev').insertAdjacentHTML('afterbegin', `<p class="help" id="perfEstado"><span class="spin"></span> ${esc(t('Leyendo {0} de {1}…', i + 1, use.length))}</p>`);
       const fuente = envio(use[i]), t0 = performance.now(); let raw = null, err = '';
@@ -5023,8 +4866,8 @@ function demoRedactor({crit, r, val}) {
 const critLista = () => criterios().map(c => `${c.id} — ${nEs(c.n)}`).join('\n');
 const CATS_AG = {extractor: ['enc', 'ind', 'seg', 'pm'], encuestas: ['enc'], quejas: ['qrf'], actas: ['act', 'pm'], auditoria: ['aud', 'seg']};
 function pasajesCats(cats, bud) { const out = []; let tot = 0; todosPasajes().filter(p => cats.includes(p.cat)).forEach(p => { const L = pTxt(p).length + 40; if (tot + L <= bud) { out.push(p); tot += L; } }); return out; }
-const hallDe = c => Object.values(S.res.hall).flat().filter(h => h.ok && h.crit === c).slice(0, presupuesto().local ? 5 : 10);
-/* aviso previo: solo con proveedores en la nube; con IA local no sale nada del equipo */
+const hallDe = c => Object.values(S.res.hall).flat().filter(h => h.ok && h.crit === c).slice(0, 10);
+/* aviso previo al envío: se enseña lo que sale y se pide confirmación una vez por sesión */
 let envioRes = null;
 function pideEnvio(txt, masks) {
   if (ENVIO_OK) return Promise.resolve(true);
@@ -5037,7 +4880,7 @@ _cierres.mEnvio = () => cierraEnvio(false);
 $('envioOk').onchange = () => { $('envioSi').disabled = !$('envioOk').checked; };
 $('envioSi').onclick = () => cierraEnvio(true); $('envioNo').onclick = () => cierraEnvio(false);
 async function confirmaEnvio(ps) {
-  if (S.esEjemplo || esLocalActivo() || ENVIO_OK) return true;
+  if (S.esEjemplo || ENVIO_OK) return true;
   const masks = ps.reduce((n, p) => n + scrubTodo(p.texto).n, 0);
   if (!(await pideEnvio(bloquePasajes(ps), masks))) throw new Error(t('Envío cancelado.'));
   return true;
@@ -5104,12 +4947,12 @@ async function confirma(c, val, modo = 'persona') {
 async function confirmaTodas(modo = 'bloque') { let n = 0; for (const c of criterios()) { const r = S.res.crit[c.id]; if (r && r.valoracion !== '?' && !r.confirmada) { await confirma(c.id, r.valoracion, modo); n++; } } return n; }
 function estimaTxt() {
   const P = presupuesto(), crs = alcanceCrit().length, completo = S.modo === 'completo', hall = ['encuestas', 'quejas', 'actas', 'auditoria'].filter(a => pasajesCats(CATS_AG[a], 1e9).length).length;
-  const llamadas = hall + crs + (completo ? 2 : 0) + crs + 1 + Math.ceil(Math.max(S.res.deb.length, 6) / (P.local ? 5 : 12)) + (completo ? 1 : 0);
+  const llamadas = hall + crs + (completo ? 2 : 0) + crs + 1 + Math.ceil(Math.max(S.res.deb.length, 6) / 12) + (completo ? 1 : 0);
   const tin = Math.round(llamadas * (Math.min(P.bud, 9000) + 2200) / 3.6), tout = Math.round(llamadas * P.max * 0.5);
   const pe = numES(S.precio.ent), ps_ = numES(S.precio.sal), coste = pe !== null && ps_ !== null ? (tin / 1e6 * pe + tout / 1e6 * ps_) : null;
   return t('Estimación de todo el proceso (diagnóstico, informe y plan): unas {0} llamadas, ≈ {1} k tokens de entrada y ≈ {2} k de salida.', llamadas, nf(tin / 1000), nf(tout / 1000)) + (coste !== null ? ' ' + t('Coste aproximado: {0}.', fmtN(coste, 2)) : '');
 }
-function iaActualTxt() { const pv = getProv(), loc = esLocalActivo(); return `${PROV[pv].n} · ${getMod(pv)}${S.esEjemplo ? ' · ' + t('IA de demostración') : ''}`; }
+function iaActualTxt() { const pv = getProv(); return `${PROV[pv].n} · ${getMod(pv)}${S.esEjemplo ? ' · ' + t('IA de demostración') : ''}`; }
 
 /* ── pantalla 4: diagnóstico y puerta de decisión ── */
 const notaTxt = c => ({sin_evidencia: 'Ninguna evidencia verificada: el código no propone valoración.', A_exige_2: 'Ajustada por el código: una A exige al menos dos evidencias verificadas a favor.', grave_alta: 'Ajustada por el código: hay una debilidad grave verificada (máximo C).', ind_rojo: 'Ajustada por el código: hay un indicador que no cumple su objetivo.'}[c] || c);
@@ -5199,7 +5042,7 @@ $('informe').addEventListener('input', e => {
 async function ejecutaComision() {
   const crs = criterios().filter(c => S.res.txt[c.id]); if (!crs.length) return;
   const T = [{key: 'c:comision', ag: 'comision', fn: async () => {
-    const P = presupuesto(), lim = P.local ? 600 : 1400, inf = crs.map(c => `${c.id} (${S.res.crit[c.id].confirmada}) ${nEs(c.n)}\n${S.res.txt[c.id].texto.slice(0, lim)}`).join('\n\n');
+    const P = presupuesto(), lim = 1400, inf = crs.map(c => `${c.id} (${S.res.crit[c.id].confirmada}) ${nEs(c.n)}\n${S.res.txt[c.id].texto.slice(0, lim)}`).join('\n\n');
     const ps = recupera({kw: crs.flatMap(c => c.kw), cats: []}, Math.floor(P.bud / 3)); await confirmaEnvio(ps);
     const raw = await llamaIA('comision', '', `${promptAg('comision')}\n\nAUTOINFORME:\n${inf.slice(0, P.bud)}\n\nEVIDENCIAS:\n${bloquePasajes(ps)}\n\n${INSTR_IDIOMA()}`); S.res.preg = validaPreguntas(raw);
   }}]; delete S.res.hechas['c:comision']; await ejecuta(T); pintaInforme();
@@ -5213,7 +5056,7 @@ function arrastre() {
 function tareasPlan() {
   return [{key: 'p:priorizador', ag: 'priorizador', fn: async () => { S.res.deb = priorizaDebs(); arrastre(); }},
     {key: 'p:acciones', ag: 'acciones', fn: async () => {
-      const P = presupuesto(), nB = P.local ? 5 : 12, debs = S.res.deb.filter(d => d.gravedad !== 'baja'), w = ventanaPlan(); if (!debs.length) return 'skip'; const acc = [];
+      const P = presupuesto(), nB = 12, debs = S.res.deb.filter(d => d.gravedad !== 'baja'), w = ventanaPlan(); if (!debs.length) return 'skip'; const acc = [];
       for (const lote of chunk(debs, nB)) {
         await confirmaEnvio(lote.map(d => ({texto: d.texto, id: d.id, cat: 'x', nombre: ''})));
         const user = `${promptAg('acciones')}\n\nCURSO DEL PLAN: ${w ? `${w.etiqueta} (plazos entre ${w.ini} y ${w.fin})` : 'el curso siguiente'}\n\nDEBILIDADES PRIORIZADAS:\n${lote.map(d => `${d.id} (${d.gravedad}; ${critNombre(d.crit)}): ${d.texto} [${d.ref}]`).join('\n')}\n\nINDICADORES EXISTENTES:\n${S.indic.slice(0, 14).map(i => i.nombre).join('; ') || '(ninguno)'}\n\nACCIONES DEL PLAN ANTERIOR SIN CERRAR:\n${S.res.arr.filter(a => a.tipo === 'accion_prev').map(a => `- ${a.texto}`).join('\n') || '(ninguna)'}\n\n${INSTR_IDIOMA()}`;
